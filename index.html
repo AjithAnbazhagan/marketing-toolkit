@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Content Repurposing Agent</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg: #f5f7ff;
+    --surface: #ffffff;
+    --surface2: #f0f2ff;
+    --border: #e2e6f3;
+    --accent: #1450F5;
+    --accent-light: #e8edff;
+    --accent-hover: #0e3fd4;
+    --green: #0d9f6e;
+    --green-bg: #e6f7f2;
+    --amber: #d97706;
+    --amber-bg: #fef3e2;
+    --red: #dc2626;
+    --red-bg: #fef2f2;
+    --text: #0f172a;
+    --text2: #334155;
+    --muted: #64748b;
+    --muted2: #94a3b8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 3px rgba(20,80,245,0.06);
+  }
+
+  .logo { display: flex; align-items: center; gap: 10px; }
+
+  .logo-icon {
+    width: 34px; height: 34px;
+    background: var(--accent);
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px; color: #fff;
+  }
+
+  .logo-text { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.4px; }
+  .logo-text span { color: var(--accent); }
+
+  .header-badge {
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 11px; font-weight: 600;
+    padding: 4px 12px; border-radius: 20px; letter-spacing: 0.3px;
+  }
+
+  /* SETUP OVERLAY */
+  .setup-overlay {
+    position: fixed; inset: 0;
+    background: rgba(15,23,42,0.5);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .setup-card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 36px;
+    width: 440px;
+    box-shadow: 0 20px 60px rgba(20,80,245,0.15);
+    border: 1.5px solid var(--border);
+  }
+
+  .setup-card h2 {
+    font-size: 20px; font-weight: 700;
+    color: var(--text); margin-bottom: 6px;
+    letter-spacing: -0.4px;
+  }
+
+  .setup-card p {
+    font-size: 13px; color: var(--muted);
+    line-height: 1.6; margin-bottom: 24px;
+  }
+
+  .setup-card p a {
+    color: var(--accent); text-decoration: none; font-weight: 500;
+  }
+
+  .setup-card p a:hover { text-decoration: underline; }
+
+  .setup-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+
+  .setup-field label {
+    font-size: 12px; font-weight: 600; color: var(--text2);
+  }
+
+  .setup-field input {
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    padding: 10px 12px;
+    width: 100%; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .setup-field input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(20,80,245,0.08);
+  }
+
+  .setup-note {
+    background: var(--amber-bg);
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 11px;
+    color: var(--amber);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .setup-btn {
+    background: var(--accent);
+    border: none; border-radius: 10px;
+    color: #fff; cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px; font-weight: 600;
+    padding: 13px; width: 100%;
+    transition: background 0.2s;
+    box-shadow: 0 4px 14px rgba(20,80,245,0.3);
+  }
+
+  .setup-btn:hover { background: var(--accent-hover); }
+
+  /* LAYOUT */
+  .app {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    height: calc(100vh - 60px);
+  }
+
+  /* LEFT PANEL */
+  .left-panel {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 20px;
+    display: flex; flex-direction: column; gap: 20px;
+    overflow-y: auto;
+  }
+
+  .section-label {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.2px;
+    color: var(--muted2); margin-bottom: 10px;
+  }
+
+  .step-header {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+  }
+
+  .step-num {
+    width: 22px; height: 22px;
+    background: var(--accent); color: #fff;
+    border-radius: 50%; font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+
+  .step-title { font-size: 12px; font-weight: 600; color: var(--text); }
+
+  .field-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
+
+  .field-group label { font-size: 11px; font-weight: 500; color: var(--muted); }
+
+  input[type="text"], textarea, select {
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    padding: 9px 12px;
+    width: 100%; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  input[type="text"]:focus, textarea:focus, select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(20,80,245,0.08);
+  }
+
+  input::placeholder, textarea::placeholder { color: var(--muted2); }
+  select { cursor: pointer; }
+
+  .divider { height: 1px; background: var(--border); }
+
+  /* RUN BUTTON */
+  .run-btn {
+    background: var(--accent);
+    border: none; border-radius: 10px;
+    color: #fff; cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px; font-weight: 600;
+    padding: 13px; width: 100%;
+    letter-spacing: -0.2px;
+    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    box-shadow: 0 4px 14px rgba(20,80,245,0.3);
+  }
+
+  .run-btn:hover:not(:disabled) {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(20,80,245,0.35);
+  }
+
+  .run-btn:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.35);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .api-reset {
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted2);
+  }
+
+  .api-reset a {
+    color: var(--accent);
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .api-reset a:hover { text-decoration: underline; }
+
+  /* HOW IT WORKS */
+  .how-steps { display: flex; flex-direction: column; gap: 9px; }
+
+  .how-step { display: flex; gap: 10px; align-items: flex-start; }
+
+  .how-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent);
+    margin-top: 5px; flex-shrink: 0;
+  }
+
+  .how-text { font-size: 11px; color: var(--muted); line-height: 1.5; }
+  .how-text strong { color: var(--text2); }
+
+  /* RIGHT PANEL */
+  .right-panel {
+    display: flex; flex-direction: column;
+    overflow: hidden; background: var(--bg);
+  }
+
+  .platform-tabs {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex; gap: 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  .platform-tab {
+    padding: 16px 20px;
+    font-size: 13px; font-weight: 600;
+    color: var(--muted); cursor: pointer;
+    border-bottom: 2.5px solid transparent;
+    display: flex; align-items: center; gap: 7px;
+    margin-bottom: -1px;
+    transition: color 0.2s; white-space: nowrap;
+  }
+
+  .platform-tab:hover { color: var(--text2); }
+  .platform-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .format-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 24px;
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+
+  .format-btn {
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 20px; color: var(--muted);
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px; font-weight: 500;
+    padding: 5px 14px;
+    transition: all 0.2s; white-space: nowrap;
+  }
+
+  .format-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .format-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  .output-area { flex: 1; overflow-y: auto; padding: 24px; }
+
+  .empty-state {
+    height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 14px; text-align: center;
+  }
+
+  .empty-icon {
+    width: 64px; height: 64px;
+    background: var(--accent-light); border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+  }
+
+  .empty-state h3 { font-size: 16px; font-weight: 600; color: var(--text); }
+
+  .empty-state p { font-size: 13px; color: var(--muted); max-width: 280px; line-height: 1.6; }
+
+  .output-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+
+  .card-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--bg);
+  }
+
+  .card-title { font-size: 12px; font-weight: 600; color: var(--text2); display: flex; align-items: center; gap: 8px; }
+
+  .copy-btn {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 6px; color: var(--muted);
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px; font-weight: 500;
+    padding: 5px 12px; transition: all 0.2s;
+  }
+
+  .copy-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .copy-btn.copied { background: var(--green-bg); border-color: var(--green); color: var(--green); }
+
+  .card-body {
+    padding: 18px; font-size: 13px;
+    line-height: 1.75; color: var(--text2); white-space: pre-wrap;
+  }
+
+  .spec-row {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    padding: 10px 18px;
+    border-top: 1px solid var(--border); background: var(--bg);
+  }
+
+  .spec-tag { font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 4px; }
+  .tag-green { background: var(--green-bg); color: var(--green); }
+  .tag-blue { background: var(--accent-light); color: var(--accent); }
+  .tag-amber { background: var(--amber-bg); color: var(--amber); }
+
+  .url-banner {
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 8px; padding: 10px 14px;
+    font-size: 11px; color: var(--muted);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px; word-break: break-all;
+  }
+
+  .url-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+
+  .perf-winner {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 18px; border-bottom: 1px solid var(--border);
+    background: var(--green-bg);
+  }
+
+  .perf-badge { background: var(--green); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 6px; }
+  .perf-label { font-size: 13px; font-weight: 600; color: var(--green); }
+
+  .error-box {
+    background: var(--red-bg); border: 1.5px solid #fecaca;
+    border-radius: 10px; padding: 16px 18px;
+    font-size: 13px; color: var(--red); line-height: 1.6;
+  }
+
+  .loading-state {
+    height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 18px;
+  }
+
+  .loading-ring {
+    width: 44px; height: 44px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  .loading-text { font-size: 13px; color: var(--muted); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<!-- SETUP OVERLAY -->
+<div class="setup-overlay" id="setupOverlay">
+  <div class="setup-card">
+    <h2>⚡ Welcome to RepurposeAgent</h2>
+    <p>
+      To get started, enter your free <strong>Google Gemini API key</strong>.<br/>
+      Get one in 2 minutes at <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com</a> — no credit card needed.
+    </p>
+    <div class="setup-field">
+      <label>Gemini API Key</label>
+      <input type="password" id="setupKey" placeholder="AQ. or AIza..." />
+    </div>
+    <div class="setup-note">
+      🔒 Your key is saved only in your browser. It is never stored on any server or visible in the code.
+    </div>
+    <button class="setup-btn" onclick="saveKey()">Save &amp; Start Using Agent →</button>
+  </div>
+</div>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">⚡</div>
+    <div class="logo-text">Repurpose<span>Agent</span></div>
+  </div>
+  <div class="header-badge">AI-Powered · Free</div>
+</header>
+
+<div class="app">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+
+    <div>
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title">Paste Blog or Page URL</div>
+      </div>
+      <div class="field-group">
+        <label>Any published blog post or landing page</label>
+        <input type="text" id="blogUrl" placeholder="https://example.com/blog/your-post" />
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div>
+      <div class="step-header">
+        <div class="step-num">2</div>
+        <div class="step-title">Brand Voice</div>
+      </div>
+
+      <div class="field-group">
+        <label>Brand Name</label>
+        <input type="text" id="brandName" placeholder="e.g. Salesforce, HubSpot, Freshworks" />
+      </div>
+
+      <div class="field-group">
+        <label>Target Audience</label>
+        <select id="audience">
+          <option value="">Select target audience</option>
+          <optgroup label="Leadership & Strategy">
+            <option value="C-Suite Executives (CEO, CTO, COO)">C-Suite Executives (CEO, CTO, COO)</option>
+            <option value="VP of Marketing / CMO">VP of Marketing / CMO</option>
+            <option value="VP of Sales / CRO">VP of Sales / CRO</option>
+            <option value="Head of Growth">Head of Growth</option>
+            <option value="Product Leaders (CPO, Product Directors)">Product Leaders (CPO, Product Directors)</option>
+          </optgroup>
+          <optgroup label="Marketing">
+            <option value="B2B Marketing Managers">B2B Marketing Managers</option>
+            <option value="Demand Generation Managers">Demand Generation Managers</option>
+            <option value="Performance Marketing Managers">Performance Marketing Managers</option>
+            <option value="Marketing Operations Managers">Marketing Operations Managers</option>
+            <option value="Content Marketing Managers">Content Marketing Managers</option>
+          </optgroup>
+          <optgroup label="Sales & Revenue">
+            <option value="Sales Directors and Account Executives">Sales Directors and Account Executives</option>
+            <option value="Business Development Managers">Business Development Managers</option>
+            <option value="Revenue Operations Managers">Revenue Operations Managers</option>
+          </optgroup>
+          <optgroup label="IT & Operations">
+            <option value="IT Managers and IT Directors">IT Managers and IT Directors</option>
+            <option value="Systems Administrators">Systems Administrators</option>
+            <option value="DevOps and Engineering Leads">DevOps and Engineering Leads</option>
+            <option value="IT Operations Managers">IT Operations Managers</option>
+          </optgroup>
+          <optgroup label="Finance & Procurement">
+            <option value="CFOs and Finance Directors">CFOs and Finance Directors</option>
+            <option value="Procurement Managers">Procurement Managers</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="field-group">
+        <label>Content Tone</label>
+        <select id="tone">
+          <option value="authoritative and practical">Authoritative & Practical</option>
+          <option value="friendly and conversational">Friendly & Conversational</option>
+          <option value="bold and direct">Bold & Direct</option>
+          <option value="educational and insightful">Educational & Insightful</option>
+          <option value="data-driven and analytical">Data-Driven & Analytical</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <button class="run-btn" id="runBtn" onclick="runAgent()">
+      <div class="spinner" id="spinner"></div>
+      <span id="runLabel">⚡ Fetch &amp; Repurpose</span>
+    </button>
+
+    <div class="api-reset">
+      <a onclick="resetKey()">Change API key</a>
+    </div>
+
+    <div class="divider"></div>
+
+    <div>
+      <div class="section-label">How it works</div>
+      <div class="how-steps">
+        <div class="how-step"><div class="how-dot"></div><div class="how-text"><strong>Fetches</strong> full content from the URL automatically</div></div>
+        <div class="how-step"><div class="how-dot"></div><div class="how-text"><strong>Sends</strong> content + brand voice to Gemini AI</div></div>
+        <div class="how-step"><div class="how-dot"></div><div class="how-text"><strong>Generates</strong> platform-ready posts with specs and image briefs</div></div>
+        <div class="how-step"><div class="how-dot"></div><div class="how-text"><strong>Copy</strong> outputs directly into Sprout Social, Buffer, or Meta Ads Manager</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+
+    <div class="platform-tabs">
+      <div class="platform-tab active" onclick="switchPlatform('linkedin')" id="ptab-linkedin">🔵 LinkedIn Post</div>
+      <div class="platform-tab" onclick="switchPlatform('meta')" id="ptab-meta">📘 Meta Post</div>
+      <div class="platform-tab" onclick="switchPlatform('performance')" id="ptab-performance">📊 Best Performer</div>
+    </div>
+
+    <div class="format-bar" id="formatBar"></div>
+
+    <div class="output-area" id="outputArea">
+      <div class="empty-state">
+        <div class="empty-icon">⚡</div>
+        <h3>Ready to repurpose</h3>
+        <p>Paste a blog URL, set your brand voice, and click <strong>Fetch & Repurpose</strong> to generate all content assets instantly.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const FORMATS = {
+  linkedin: [
+    { id: 'li-text', label: 'Text Only Post' },
+    { id: 'li-image', label: 'Single Image Post' },
+    { id: 'li-carousel', label: 'Carousel Post' },
+    { id: 'li-poll', label: 'Poll Post' },
+    { id: 'li-video', label: 'Video Script' },
+  ],
+  meta: [
+    { id: 'meta-image', label: 'Single Image Post' },
+    { id: 'meta-carousel', label: 'Carousel Post' },
+    { id: 'meta-story', label: 'Story Post' },
+  ],
+  performance: []
+};
+
+let currentPlatform = 'linkedin';
+let currentFormat = 'li-text';
+let allOutputs = {};
+let fetchedUrl = '';
+
+// KEY MANAGEMENT — stored in localStorage, never in code
+function getKey() { return localStorage.getItem('repurpose_agent_key') || ''; }
+
+function saveKey() {
+  const k = document.getElementById('setupKey').value.trim();
+  if (!k) { alert('Please enter your API key.'); return; }
+  localStorage.setItem('repurpose_agent_key', k);
+  document.getElementById('setupOverlay').style.display = 'none';
+}
+
+function resetKey() {
+  localStorage.removeItem('repurpose_agent_key');
+  document.getElementById('setupKey').value = '';
+  document.getElementById('setupOverlay').style.display = 'flex';
+}
+
+// Show overlay only if no key saved
+window.addEventListener('DOMContentLoaded', () => {
+  if (getKey()) document.getElementById('setupOverlay').style.display = 'none';
+  switchPlatform('linkedin');
+});
+
+function switchPlatform(platform) {
+  currentPlatform = platform;
+  document.querySelectorAll('.platform-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('ptab-' + platform).classList.add('active');
+  const bar = document.getElementById('formatBar');
+  bar.innerHTML = '';
+  const formats = FORMATS[platform] || [];
+  formats.forEach((f, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'format-btn' + (i === 0 ? ' active' : '');
+    btn.textContent = f.label;
+    btn.onclick = () => {
+      document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFormat = f.id;
+      renderCurrentOutput();
+    };
+    bar.appendChild(btn);
+  });
+  if (formats.length > 0) currentFormat = formats[0].id;
+  else currentFormat = platform;
+  renderCurrentOutput();
+}
+
+function renderCurrentOutput() {
+  const area = document.getElementById('outputArea');
+  if (Object.keys(allOutputs).length === 0) {
+    area.innerHTML = `<div class="empty-state"><div class="empty-icon">⚡</div><h3>Ready to repurpose</h3><p>Paste a blog URL, set your brand voice, and click <strong>Fetch & Repurpose</strong> to generate all content assets instantly.</p></div>`;
+    return;
+  }
+  const data = allOutputs[currentFormat] || allOutputs[currentPlatform] || '';
+  if (!data) { area.innerHTML = `<div class="error-box">No output for this format. Try running again.</div>`; return; }
+
+  if (currentPlatform === 'performance') {
+    const bestMatch = data.match(/BEST FORMAT:\s*(.+)/i);
+    const best = bestMatch ? bestMatch[1].trim() : '';
+    const rest = data.replace(/BEST FORMAT:\s*.+/i, '').trim();
+    area.innerHTML = `
+      <div class="url-banner"><div class="url-dot"></div>${fetchedUrl}</div>
+      <div class="output-card">
+        <div class="card-header"><div class="card-title">📊 Performance Prediction</div></div>
+        ${best ? `<div class="perf-winner"><span class="perf-badge">🏆 Best Format</span><span class="perf-label">${best}</span></div>` : ''}
+        <div class="card-body">${rest}</div>
+      </div>`;
+    return;
+  }
+
+  area.innerHTML = `
+    <div class="url-banner"><div class="url-dot"></div>${fetchedUrl}</div>
+    <div class="output-card">
+      <div class="card-header">
+        <div class="card-title">${getCardTitle(currentFormat)}</div>
+        <button class="copy-btn" id="copyBtn" onclick="copyOutput()">Copy</button>
+      </div>
+      <div class="card-body" id="outputBody">${escapeHtml(data)}</div>
+      <div class="spec-row">${getSpecTags(currentFormat)}</div>
+    </div>`;
+}
+
+function getCardTitle(fmt) {
+  const map = {
+    'li-text':'🔵 LinkedIn · Text Only Post','li-image':'🔵 LinkedIn · Single Image Post',
+    'li-carousel':'🔵 LinkedIn · Carousel Post','li-poll':'🔵 LinkedIn · Poll Post',
+    'li-video':'🔵 LinkedIn · Video Script','meta-image':'📘 Meta · Single Image Post',
+    'meta-carousel':'📘 Meta · Carousel Post','meta-story':'📘 Meta · Story Post',
+  };
+  return map[fmt] || fmt;
+}
+
+function getSpecTags(fmt) {
+  const map = {
+    'li-text':'<span class="spec-tag tag-blue">≤3000 chars</span><span class="spec-tag tag-blue">Hook in line 1</span><span class="spec-tag tag-blue">5 hashtags</span>',
+    'li-image':'<span class="spec-tag tag-green">1200×627px landscape</span><span class="spec-tag tag-blue">≤3000 chars</span><span class="spec-tag tag-blue">Image brief included</span>',
+    'li-carousel':'<span class="spec-tag tag-green">1080×1080px per slide</span><span class="spec-tag tag-blue">6 slides</span><span class="spec-tag tag-amber">Export as PDF</span>',
+    'li-poll':'<span class="spec-tag tag-blue">≤3000 chars</span><span class="spec-tag tag-blue">4 poll options</span><span class="spec-tag tag-amber">7-day duration</span>',
+    'li-video':'<span class="spec-tag tag-blue">60–90 sec script</span><span class="spec-tag tag-green">Hook in first 3 secs</span><span class="spec-tag tag-amber">Add captions</span>',
+    'meta-image':'<span class="spec-tag tag-green">Feed 1:1 · 1080×1080px</span><span class="spec-tag tag-blue">Headline ≤40 chars</span><span class="spec-tag tag-blue">Primary ≤125 chars</span>',
+    'meta-carousel':'<span class="spec-tag tag-green">1080×1080px per card</span><span class="spec-tag tag-blue">2–10 cards</span><span class="spec-tag tag-blue">Each card has own headline</span>',
+    'meta-story':'<span class="spec-tag tag-green">9:16 · 1080×1920px</span><span class="spec-tag tag-blue">≤125 chars</span><span class="spec-tag tag-amber">Safe zone top & bottom 14%</span>',
+  };
+  return map[fmt] || '';
+}
+
+function escapeHtml(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function copyOutput() {
+  const body = document.getElementById('outputBody');
+  if (!body) return;
+  navigator.clipboard.writeText(body.innerText).then(() => {
+    const btn = document.getElementById('copyBtn');
+    if (btn) { btn.textContent = '✓ Copied!'; btn.classList.add('copied'); setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800); }
+  });
+}
+
+function setLoading(on) {
+  document.getElementById('runBtn').disabled = on;
+  document.getElementById('spinner').style.display = on ? 'block' : 'none';
+  document.getElementById('runLabel').textContent = on ? 'Processing…' : '⚡ Fetch & Repurpose';
+}
+
+async function fetchContent(url) {
+  const res = await fetch('https://r.jina.ai/' + url, { headers: { 'Accept': 'text/plain' } });
+  if (!res.ok) throw new Error('Could not fetch the page. Make sure the URL is publicly accessible.');
+  return (await res.text()).slice(0, 8000);
+}
+
+async function callGemini(content, brand, audience, tone) {
+  const key = getKey();
+  if (!key) throw new Error('No API key found. Please refresh and enter your key.');
+  const prompt = `You are a B2B social media content strategist.
+BRAND: ${brand || 'the company'}
+AUDIENCE: ${audience || 'business professionals'}
+TONE: ${tone}
+
+BLOG CONTENT:
+${content}
+
+Generate EXACTLY these sections with EXACT headings:
+
+===LI_TEXT===
+LinkedIn text-only post. Max 3000 chars. Strong hook line 1. Short paragraphs. Insight. CTA. 5 hashtags. End with [CHARS: xxx]
+
+===LI_IMAGE===
+LinkedIn single image post. Max 3000 chars. Hook line 1. CTA. 5 hashtags. Then IMAGE BRIEF: describe visual (1200x627px landscape). End with [CHARS: xxx]
+
+===LI_CAROUSEL===
+6-slide LinkedIn carousel.
+SLIDE 1: Cover - headline + subheadline
+SLIDES 2-5: title + 2 bullets each
+SLIDE 6: CTA
+Image spec per slide: 1080x1080px square
+
+===LI_POLL===
+LinkedIn poll post. Engaging question. 2-3 lines context. 4 poll options. Encourage comment. 3 hashtags.
+
+===LI_VIDEO===
+60-90 second LinkedIn video script. Hook (first 3 sec). 3 key points. CTA. Note: add captions.
+
+===META_IMAGE===
+HEADLINE: (max 40 chars, show count)
+PRIMARY TEXT: (max 125 chars, show count)
+DESCRIPTION: (max 30 chars, show count)
+CTA BUTTON: Learn More / Get Started / Sign Up (pick best)
+IMAGE BRIEF FEED (1:1 1080x1080px): 2 sentences
+IMAGE BRIEF STORY (9:16 1080x1920px): 2 sentences
+
+===META_CAROUSEL===
+3-5 cards. Each: CARD HEADLINE (max 40 chars) + CARD BODY (max 125 chars) + image brief
+Overall PRIMARY TEXT: max 125 chars
+
+===META_STORY===
+TEXT OVERLAY: max 125 chars, punchy
+VISUAL BRIEF (9:16 1080x1920px): 2 sentences
+CTA STICKER: suggest swipe-up text
+
+===PERFORMANCE===
+Which single format performs best for this content and why. Start with: BEST FORMAT: [name]. Max 4 sentences.
+
+Output only these sections.`;
+
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.75, maxOutputTokens: 3000 } })
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.error?.message || 'AI generation failed. Please try again.');
+  }
+  const data = await res.json();
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+}
+
+function parseOutputs(raw) {
+  const keys = ['LI_TEXT','LI_IMAGE','LI_CAROUSEL','LI_POLL','LI_VIDEO','META_IMAGE','META_CAROUSEL','META_STORY','PERFORMANCE'];
+  const out = {};
+  keys.forEach((k, i) => {
+    const start = raw.indexOf(`===${k}===`);
+    if (start === -1) { out[k] = ''; return; }
+    const from = start + `===${k}===`.length;
+    let to = raw.length;
+    for (let j = i+1; j < keys.length; j++) {
+      const next = raw.indexOf(`===${keys[j]}===`, from);
+      if (next !== -1) { to = next; break; }
+    }
+    out[k] = raw.slice(from, to).trim();
+  });
+  return { 'li-text':out.LI_TEXT,'li-image':out.LI_IMAGE,'li-carousel':out.LI_CAROUSEL,'li-poll':out.LI_POLL,'li-video':out.LI_VIDEO,'meta-image':out.META_IMAGE,'meta-carousel':out.META_CAROUSEL,'meta-story':out.META_STORY,'performance':out.PERFORMANCE };
+}
+
+async function runAgent() {
+  const url = document.getElementById('blogUrl').value.trim();
+  const brand = document.getElementById('brandName').value.trim();
+  const audience = document.getElementById('audience').value;
+  const tone = document.getElementById('tone').value;
+  if (!url || !url.startsWith('http')) return alert('Please enter a valid URL starting with https://');
+  setLoading(true);
+  fetchedUrl = url;
+  allOutputs = {};
+  document.getElementById('outputArea').innerHTML = `<div class="loading-state"><div class="loading-ring"></div><div class="loading-text" id="loadingText">Fetching content from URL…</div></div>`;
+  try {
+    const content = await fetchContent(url);
+    document.getElementById('loadingText').textContent = 'Generating all content formats with AI…';
+    const raw = await callGemini(content, brand, audience, tone);
+    allOutputs = parseOutputs(raw);
+    switchPlatform('linkedin');
+  } catch(e) {
+    document.getElementById('outputArea').innerHTML = `<div class="error-box">❌ ${e.message}</div>`;
+  } finally {
+    setLoading(false);
+  }
+}
+</script>
+</body>
+</html>
