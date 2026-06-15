@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Marketing Decision Journal</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+:root {
+  --bg:#f5f7ff;--surface:#fff;--border:#e2e6f3;
+  --accent:#1450F5;--accent-light:#e8edff;--accent-hover:#0e3fd4;
+  --green:#0d9f6e;--green-bg:#e6f7f2;
+  --amber:#d97706;--amber-bg:#fef3e2;
+  --red:#dc2626;--red-bg:#fef2f2;
+  --text:#0f172a;--text2:#334155;--muted:#64748b;--muted2:#94a3b8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;min-height:100vh;}
+
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(20,80,245,.06);}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;}
+.logo-text{font-size:15px;font-weight:700;letter-spacing:-.4px;}
+.logo-text span{color:var(--accent);}
+.hbtn{background:var(--accent);border:none;border-radius:8px;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:7px 16px;transition:background .2s;box-shadow:0 3px 10px rgba(20,80,245,.25);}
+.hbtn:hover{background:var(--accent-hover);}
+.hbtn-o{background:transparent;border:1.5px solid var(--border);border-radius:8px;color:var(--text2);cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;padding:6px 14px;transition:all .2s;}
+.hbtn-o:hover{border-color:var(--accent);color:var(--accent);}
+
+.nav-tabs{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;display:flex;}
+.nav-tab{padding:14px 18px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1px;transition:color .2s;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+.nav-tab:hover{color:var(--text2);}
+.nav-tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+
+.main{padding:24px 28px;max-width:1200px;margin:0 auto;}
+
+.stat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.stat-label{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;}
+.stat-value{font-size:24px;font-weight:700;letter-spacing:-.5px;}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:3px;}
+.c-green{color:var(--green);}
+.c-amber{color:var(--amber);}
+.c-red{color:var(--red);}
+.c-accent{color:var(--accent);}
+
+.section-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
+.section-title{font-size:14px;font-weight:600;}
+.section-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+
+.filter-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.fsel{background:var(--surface);border:1.5px solid var(--border);border-radius:8px;color:var(--text2);font-family:'Inter',sans-serif;font-size:12px;padding:6px 10px;outline:none;cursor:pointer;}
+.fsel:focus{border-color:var(--accent);}
+
+.jtable{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:24px;}
+.jtable table{width:100%;border-collapse:collapse;font-size:13px;}
+.jtable th{background:var(--bg);padding:10px 14px;text-align:left;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid var(--border);white-space:nowrap;}
+.jtable td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--text2);line-height:1.5;}
+.jtable tr:last-child td{border-bottom:none;}
+.jtable tr:hover td{background:var(--bg);}
+
+.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;white-space:nowrap;}
+.bg-google{background:#fef3e2;color:#d97706;}
+.bg-linkedin{background:#e0f0ff;color:#0077b5;}
+.bg-meta{background:#ede9fe;color:#7c3aed;}
+.bg-pos{background:var(--green-bg);color:var(--green);}
+.bg-neg{background:var(--red-bg);color:var(--red);}
+.bg-pend{background:var(--amber-bg);color:var(--amber);}
+.bg-bb{background:#fef3e2;color:#d97706;}
+.bg-at{background:#e0f0ff;color:#0369a1;}
+.bg-cm{background:#fce7f3;color:#be185d;}
+.bg-lp{background:#ecfdf5;color:#065f46;}
+.bg-cs{background:#f0f9ff;color:#0c4a6e;}
+.bg-ab{background:#f5f3ff;color:#7c3aed;}
+.bg-ss{background:#fff7ed;color:#c2410c;}
+
+.row-actions{display:flex;gap:5px;}
+.rbtn{background:none;border:1px solid var(--border);border-radius:5px;color:var(--muted);cursor:pointer;font-size:11px;padding:3px 8px;transition:all .2s;font-family:'Inter',sans-serif;white-space:nowrap;}
+.rbtn:hover{border-color:var(--accent);color:var(--accent);}
+.rbtn-outcome{background:var(--amber-bg);border-color:#fde68a;color:var(--amber);}
+.rbtn-outcome:hover{background:var(--amber);color:#fff;border-color:var(--amber);}
+.rbtn-del{border-color:#fecaca;color:var(--red);}
+.rbtn-del:hover{background:var(--red);color:#fff;border-color:var(--red);}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;}
+.modal{background:var(--surface);border-radius:16px;padding:28px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(20,80,245,.15);border:1px solid var(--border);}
+.modal h2{font-size:17px;font-weight:700;margin-bottom:4px;}
+.modal-sub{font-size:12px;color:var(--muted);margin-bottom:20px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;}
+.ff{display:flex;flex-direction:column;gap:5px;}
+.ff.full{grid-column:1/-1;}
+.ff label{font-size:11px;font-weight:600;color:var(--text2);}
+.ff input,.ff select,.ff textarea{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;padding:9px 12px;width:100%;outline:none;transition:border-color .2s;resize:vertical;}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(20,80,245,.08);}
+.ff textarea{min-height:68px;}
+.ff input::placeholder,.ff textarea::placeholder{color:var(--muted2);}
+.modal-actions{display:flex;gap:10px;margin-top:20px;justify-content:flex-end;}
+.btn-p{background:var(--accent);border:none;border-radius:8px;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;padding:10px 20px;transition:background .2s;box-shadow:0 3px 10px rgba(20,80,245,.25);}
+.btn-p:hover{background:var(--accent-hover);}
+.btn-c{background:transparent;border:1.5px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;padding:10px 20px;transition:all .2s;}
+.btn-c:hover{border-color:var(--red);color:var(--red);}
+
+/* OUTCOME MODAL */
+.outcome-modal{background:var(--surface);border-radius:16px;padding:28px;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(20,80,245,.15);border:1px solid var(--border);}
+.outcome-modal h2{font-size:16px;font-weight:700;margin-bottom:4px;}
+.decision-preview{background:var(--bg);border-radius:8px;padding:12px;font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:18px;border-left:3px solid var(--accent);}
+
+/* REPORT */
+.report-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:14px;}
+.report-card h3{font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+.narrative-box{font-size:13px;color:var(--text2);line-height:1.85;background:var(--bg);border-radius:8px;padding:16px;border-left:3px solid var(--accent);}
+.breakdown-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+.bdown{background:var(--bg);border-radius:8px;padding:12px;text-align:center;}
+.bdown-num{font-size:22px;font-weight:700;}
+.bdown-label{font-size:11px;color:var(--muted);margin-top:2px;}
+.decision-item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.decision-item:last-child{border-bottom:none;}
+.di-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.dot-pos{background:var(--green);}
+.dot-neg{background:var(--red);}
+.dot-pend{background:var(--amber);}
+.di-content{flex:1;line-height:1.5;color:var(--text2);}
+.di-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* PATTERNS */
+.pattern-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.pattern-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.pattern-card h4{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;}
+.prow{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.prow:last-child{border-bottom:none;}
+.pbar-wrap{width:60px;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.pbar{height:5px;border-radius:3px;background:var(--accent);}
+
+.learning-item{padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2);line-height:1.5;display:flex;gap:8px;}
+.learning-item:last-child{border-bottom:none;}
+
+.empty-state{text-align:center;padding:52px 20px;color:var(--muted);}
+.empty-icon{font-size:36px;margin-bottom:10px;opacity:.35;}
+.empty-state h3{font-size:14px;font-weight:600;color:var(--text);margin-bottom:5px;opacity:.45;}
+.empty-state p{font-size:12px;line-height:1.6;max-width:280px;margin:0 auto;}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;font-size:13px;font-weight:500;padding:11px 18px;border-radius:10px;z-index:999;transform:translateY(60px);opacity:0;transition:all .3s;}
+.toast.show{transform:translateY(0);opacity:1;}
+.hidden{display:none!important;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">📓</div>
+    <div class="logo-text">Marketing<span>Journal</span></div>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <button class="hbtn-o" onclick="exportData()">Export</button>
+    <button class="hbtn-o" onclick="importData()">Import</button>
+    <button class="hbtn" onclick="openLogModal()">+ Log Decision</button>
+  </div>
+</header>
+
+<div class="nav-tabs">
+  <div class="nav-tab active" onclick="switchView('journal')" id="tab-journal">📋 Decision Log</div>
+  <div class="nav-tab" onclick="switchView('report')" id="tab-report">📊 Biweekly Report</div>
+  <div class="nav-tab" onclick="switchView('patterns')" id="tab-patterns">🔍 Patterns & Learnings</div>
+</div>
+
+<div class="main">
+  <div class="stat-grid" id="statGrid"></div>
+
+  <!-- JOURNAL -->
+  <div id="view-journal">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Decision Log</div>
+        <div class="section-sub">Log significant decisions only — not every small daily tweak</div>
+      </div>
+    </div>
+    <div class="filter-bar">
+      <select class="fsel" id="fPlatform" onchange="renderJournal()">
+        <option value="">All Platforms</option>
+        <option>Google Ads</option>
+        <option>LinkedIn Ads</option>
+        <option>Meta Ads</option>
+      </select>
+      <select class="fsel" id="fType" onchange="renderJournal()">
+        <option value="">All Categories</option>
+        <option>Budget & Bidding</option>
+        <option>Audience & Targeting</option>
+        <option>Creative & Messaging</option>
+        <option>Landing Page & CRO</option>
+        <option>Campaign Structure</option>
+        <option>AB Test</option>
+        <option>Strategy Shift</option>
+      </select>
+      <select class="fsel" id="fOutcome" onchange="renderJournal()">
+        <option value="">All Outcomes</option>
+        <option>Positive</option>
+        <option>Negative</option>
+        <option>Pending</option>
+      </select>
+      <select class="fsel" id="fPeriod" onchange="renderJournal()">
+        <option value="">All Time</option>
+        <option value="7">Last 7 days</option>
+        <option value="14">Last 14 days</option>
+        <option value="30">Last 30 days</option>
+      </select>
+    </div>
+    <div class="jtable" id="journalTable"></div>
+  </div>
+
+  <!-- REPORT -->
+  <div id="view-report" class="hidden">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Biweekly Report</div>
+        <div class="section-sub">Auto-generated from your last 14 days — ready to present</div>
+      </div>
+      <button class="hbtn" onclick="copyNarrative()">Copy Narrative</button>
+    </div>
+    <div id="reportContent"></div>
+  </div>
+
+  <!-- PATTERNS -->
+  <div id="view-patterns" class="hidden">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Patterns & Learnings</div>
+        <div class="section-sub">What works, what doesn't, and your growing knowledge library</div>
+      </div>
+    </div>
+    <div id="patternsContent"></div>
+  </div>
+</div>
+
+<!-- LOG MODAL -->
+<div class="modal-overlay hidden" id="logModal">
+  <div class="modal">
+    <h2 id="modalTitle">Log a Decision</h2>
+    <div class="modal-sub">Document what you changed, why, and what you expect — update the outcome in 1–2 weeks</div>
+    <div class="form-grid">
+      <div class="ff"><label>Date</label><input type="date" id="fDate"/></div>
+      <div class="ff"><label>Platform</label>
+        <select id="fPlatform2">
+          <option>Google Ads</option><option>LinkedIn Ads</option><option>Meta Ads</option>
+        </select>
+      </div>
+      <div class="ff full"><label>Campaign Name <span style="font-weight:400;color:var(--muted)">(optional — leave blank for account-level decisions)</span></label>
+        <input type="text" id="fCampaign" placeholder="e.g. US — Lead Gen — Q2 2026"/>
+      </div>
+      <div class="ff full"><label>Category</label>
+        <select id="fType2">
+          <option>Budget & Bidding</option>
+          <option>Audience & Targeting</option>
+          <option>Creative & Messaging</option>
+          <option>Landing Page & CRO</option>
+          <option>Campaign Structure</option>
+          <option>AB Test</option>
+          <option>Strategy Shift</option>
+        </select>
+      </div>
+      <div class="ff full"><label>What did you change or decide?</label>
+        <textarea id="fDecision" placeholder="e.g. Increased max CPC bids by 30% on top 5 converting keywords across UK campaigns"></textarea>
+      </div>
+      <div class="ff full"><label>Why did you make this change?</label>
+        <textarea id="fWhy" placeholder="e.g. Impression share dropped below 35% over the past 7 days — competitor pressure increasing"></textarea>
+      </div>
+      <div class="ff full"><label>What do you expect to happen?</label>
+        <textarea id="fExpected" placeholder="e.g. Impression share to recover above 55%, CPC will increase short term by 15–20%"></textarea>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-c" onclick="closeModal('logModal')">Cancel</button>
+      <button class="btn-p" onclick="saveDecision()">Save Decision</button>
+    </div>
+  </div>
+</div>
+
+<!-- OUTCOME MODAL -->
+<div class="modal-overlay hidden" id="outcomeModal">
+  <div class="outcome-modal">
+    <h2>Update Outcome</h2>
+    <div class="modal-sub">What actually happened after this decision?</div>
+    <div class="decision-preview" id="outcomePreview"></div>
+    <div class="form-grid">
+      <div class="ff full"><label>Outcome</label>
+        <select id="oOutcome">
+          <option>Pending</option><option>Positive</option><option>Negative</option>
+        </select>
+      </div>
+      <div class="ff full"><label>What actually happened?</label>
+        <textarea id="oResult" placeholder="e.g. Impression share recovered to 61%, CPC rose from $11 to $13.50 — acceptable trade-off for the volume gained"></textarea>
+      </div>
+      <div class="ff full"><label>The learning — what would you tell your future self?</label>
+        <textarea id="oLearning" placeholder="e.g. A 30% bid increase reliably recovers impression share on branded terms. CPC uplift of ~20% is the expected cost. Worth repeating."></textarea>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-c" onclick="closeModal('outcomeModal')">Cancel</button>
+      <button class="btn-p" onclick="saveOutcome()">Save Outcome</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let decisions = JSON.parse(localStorage.getItem('mdj_v2') || '[]');
+let editingId = null;
+let outcomeId = null;
+
+function save(){ localStorage.setItem('mdj_v2', JSON.stringify(decisions)); }
+function genId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+function showToast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2400); }
+function closeModal(id){ document.getElementById(id).classList.add('hidden'); }
+
+function fmtDate(d){
+  if(!d) return '—';
+  const dt = new Date(d+'T00:00:00');
+  return dt.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+}
+
+function platformBadge(p){
+  const map={'Google Ads':'bg-google','LinkedIn Ads':'bg-linkedin','Meta Ads':'bg-meta'};
+  const short={'Google Ads':'Google','LinkedIn Ads':'LinkedIn','Meta Ads':'Meta'};
+  return `<span class="badge ${map[p]||''}">${short[p]||p}</span>`;
+}
+
+function typeBadge(t){
+  const map={'Budget & Bidding':'bg-bb','Audience & Targeting':'bg-at','Creative & Messaging':'bg-cm','Landing Page & CRO':'bg-lp','Campaign Structure':'bg-cs','AB Test':'bg-ab','Strategy Shift':'bg-ss'};
+  const short={'Budget & Bidding':'Budget & Bids','Audience & Targeting':'Audience','Creative & Messaging':'Creative','Landing Page & CRO':'Landing Page','Campaign Structure':'Structure','AB Test':'AB Test','Strategy Shift':'Strategy'};
+  return `<span class="badge ${map[t]||''}">${short[t]||t}</span>`;
+}
+
+function outcomeBadge(o){
+  if(o==='Positive') return '<span class="badge bg-pos">✓ Positive</span>';
+  if(o==='Negative') return '<span class="badge bg-neg">✗ Negative</span>';
+  return '<span class="badge bg-pend">⏳ Pending</span>';
+}
+
+function switchView(view){
+  ['journal','report','patterns'].forEach(v=>{
+    document.getElementById('view-'+v).classList.toggle('hidden', v!==view);
+    document.getElementById('tab-'+v).classList.toggle('active', v===view);
+  });
+  if(view==='report') renderReport();
+  if(view==='patterns') renderPatterns();
+  if(view==='journal') renderJournal();
+}
+
+function getFiltered(){
+  const p=document.getElementById('fPlatform')?.value||'';
+  const t=document.getElementById('fType')?.value||'';
+  const o=document.getElementById('fOutcome')?.value||'';
+  const days=parseInt(document.getElementById('fPeriod')?.value||'0');
+  return decisions.filter(d=>{
+    if(p && d.platform!==p) return false;
+    if(t && d.type!==t) return false;
+    if(o && d.outcome!==o) return false;
+    if(days){ const c=new Date(); c.setDate(c.getDate()-days); if(new Date(d.date)<c) return false; }
+    return true;
+  });
+}
+
+function renderJournal(){
+  const filtered=getFiltered();
+  const el=document.getElementById('journalTable');
+  if(!filtered.length){
+    el.innerHTML=`<div class="empty-state"><div class="empty-icon">📋</div><h3>No decisions logged yet</h3><p>Click "+ Log Decision" to start. Log significant changes only — not every small daily tweak.</p></div>`;
+    return;
+  }
+  el.innerHTML=`<table>
+    <thead><tr>
+      <th>Date</th><th>Platform</th><th>Category</th><th>What changed</th><th>Why</th><th>Outcome</th><th>Actions</th>
+    </tr></thead>
+    <tbody>${filtered.map(d=>`
+      <tr>
+        <td style="white-space:nowrap;font-size:12px;color:var(--muted)">${fmtDate(d.date)}</td>
+        <td>${platformBadge(d.platform)}</td>
+        <td>${typeBadge(d.type)}</td>
+        <td style="max-width:220px;font-size:12px">${d.decision}</td>
+        <td style="max-width:180px;font-size:12px;color:var(--muted)">${d.why}</td>
+        <td>${outcomeBadge(d.outcome)}</td>
+        <td>
+          <div class="row-actions">
+            ${d.outcome==='Pending'?`<button class="rbtn rbtn-outcome" onclick="openOutcomeModal('${d.id}')">Update outcome</button>`:`<button class="rbtn" onclick="openOutcomeModal('${d.id}')">Edit outcome</button>`}
+            <button class="rbtn" onclick="openLogModal('${d.id}')">Edit</button>
+            <button class="rbtn rbtn-del" onclick="del('${d.id}')">Del</button>
+          </div>
+        </td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+function renderStats(){
+  const total=decisions.length;
+  const pos=decisions.filter(d=>d.outcome==='Positive').length;
+  const neg=decisions.filter(d=>d.outcome==='Negative').length;
+  const pend=decisions.filter(d=>d.outcome==='Pending').length;
+  const wr=pos+neg>0?Math.round((pos/(pos+neg))*100):0;
+  const last14=decisions.filter(d=>{ const c=new Date(); c.setDate(c.getDate()-14); return new Date(d.date)>=c; }).length;
+  document.getElementById('statGrid').innerHTML=`
+    <div class="stat-card"><div class="stat-label">Total Decisions</div><div class="stat-value c-accent">${total}</div><div class="stat-sub">All time</div></div>
+    <div class="stat-card"><div class="stat-label">Last 14 Days</div><div class="stat-value">${last14}</div><div class="stat-sub">This fortnight</div></div>
+    <div class="stat-card"><div class="stat-label">Positive</div><div class="stat-value c-green">${pos}</div><div class="stat-sub">Confirmed wins</div></div>
+    <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-value c-amber">${pend}</div><div class="stat-sub">Awaiting outcome</div></div>
+    <div class="stat-card"><div class="stat-label">Win Rate</div><div class="stat-value ${wr>=60?'c-green':wr<40&&pos+neg>0?'c-red':''}">${pos+neg>0?wr+'%':'—'}</div><div class="stat-sub">Positive vs negative</div></div>`;
+}
+
+function openLogModal(id){
+  editingId=id||null;
+  document.getElementById('logModal').classList.remove('hidden');
+  const today=new Date().toISOString().split('T')[0];
+  if(id){
+    const d=decisions.find(x=>x.id===id);
+    document.getElementById('modalTitle').textContent='Edit Decision';
+    document.getElementById('fDate').value=d.date;
+    document.getElementById('fPlatform2').value=d.platform;
+    document.getElementById('fCampaign').value=d.campaign||'';
+    document.getElementById('fType2').value=d.type;
+    document.getElementById('fDecision').value=d.decision;
+    document.getElementById('fWhy').value=d.why;
+    document.getElementById('fExpected').value=d.expected||'';
+  } else {
+    document.getElementById('modalTitle').textContent='Log a Decision';
+    document.getElementById('fDate').value=today;
+    document.getElementById('fPlatform2').value='Google Ads';
+    document.getElementById('fCampaign').value='';
+    document.getElementById('fType2').value='Budget & Bidding';
+    document.getElementById('fDecision').value='';
+    document.getElementById('fWhy').value='';
+    document.getElementById('fExpected').value='';
+  }
+}
+
+function saveDecision(){
+  const decision=document.getElementById('fDecision').value.trim();
+  const why=document.getElementById('fWhy').value.trim();
+  if(!decision||!why){ alert('Please fill in what you changed and why.'); return; }
+  const obj={
+    id:editingId||genId(),
+    date:document.getElementById('fDate').value,
+    platform:document.getElementById('fPlatform2').value,
+    campaign:document.getElementById('fCampaign').value,
+    type:document.getElementById('fType2').value,
+    outcome:editingId?decisions.find(x=>x.id===editingId)?.outcome||'Pending':'Pending',
+    decision, why,
+    expected:document.getElementById('fExpected').value,
+    result:editingId?decisions.find(x=>x.id===editingId)?.result||'':'',
+    learning:editingId?decisions.find(x=>x.id===editingId)?.learning||'':'',
+  };
+  if(editingId){ decisions[decisions.findIndex(x=>x.id===editingId)]=obj; showToast('Updated ✓'); }
+  else { decisions.unshift(obj); showToast('Decision logged ✓'); }
+  save(); closeModal('logModal'); renderJournal(); renderStats();
+}
+
+function openOutcomeModal(id){
+  outcomeId=id;
+  const d=decisions.find(x=>x.id===id);
+  document.getElementById('outcomePreview').innerHTML=`<strong>${fmtDate(d.date)} · ${d.platform} · ${d.type}</strong><br>${d.decision}`;
+  document.getElementById('oOutcome').value=d.outcome;
+  document.getElementById('oResult').value=d.result||'';
+  document.getElementById('oLearning').value=d.learning||'';
+  document.getElementById('outcomeModal').classList.remove('hidden');
+}
+
+function saveOutcome(){
+  const result=document.getElementById('oResult').value.trim();
+  if(!result){ alert('Please describe what happened.'); return; }
+  const idx=decisions.findIndex(x=>x.id===outcomeId);
+  decisions[idx].outcome=document.getElementById('oOutcome').value;
+  decisions[idx].result=result;
+  decisions[idx].learning=document.getElementById('oLearning').value;
+  save(); closeModal('outcomeModal'); renderJournal(); renderStats(); showToast('Outcome saved ✓');
+}
+
+function del(id){
+  if(!confirm('Delete this decision?')) return;
+  decisions=decisions.filter(x=>x.id!==id);
+  save(); renderJournal(); renderStats(); showToast('Deleted');
+}
+
+function renderReport(){
+  const cutoff=new Date(); cutoff.setDate(cutoff.getDate()-14);
+  const recent=decisions.filter(d=>new Date(d.date)>=cutoff);
+  const el=document.getElementById('reportContent');
+  if(!recent.length){
+    el.innerHTML=`<div class="empty-state"><div class="empty-icon">📊</div><h3>No decisions in the last 14 days</h3><p>Log decisions first and return here to generate your biweekly report.</p></div>`;
+    return;
+  }
+  const pos=recent.filter(d=>d.outcome==='Positive');
+  const neg=recent.filter(d=>d.outcome==='Negative');
+  const pend=recent.filter(d=>d.outcome==='Pending');
+  const platforms=[...new Set(recent.map(d=>d.platform))];
+  const typeCount=recent.reduce((a,d)=>{a[d.type]=(a[d.type]||0)+1;return a;},{});
+  const topType=Object.entries(typeCount).sort((a,b)=>b[1]-a[1])[0]?.[0]||'';
+  const wr=pos.length+neg.length>0?Math.round((pos.length/(pos.length+neg.length))*100):null;
+
+  let narrative=`In the past two weeks, ${recent.length} significant marketing decisions were made across ${platforms.join(', ')}. `;
+  if(topType) narrative+=`The primary focus area was ${topType}, accounting for ${typeCount[topType]} of the total changes. `;
+  if(pos.length>0){ const ex=pos[0]; narrative+=`A key win was: ${ex.decision.slice(0,90)}${ex.decision.length>90?'...':''} — ${ex.result||'confirmed positive outcome'}. `; }
+  if(neg.length>0) narrative+=`${neg.length} initiative${neg.length>1?'s did':' did'} not perform as expected — these have been documented as learnings to inform future decisions. `;
+  if(pend.length>0) narrative+=`${pend.length} decision${pend.length>1?'s are':' is'} still under observation and will be reviewed in the next cycle. `;
+  if(wr!==null) narrative+=`Decision quality this fortnight: ${wr}% positive outcome rate.`;
+
+  el.innerHTML=`
+    <div class="report-card">
+      <div class="breakdown-row">
+        <div class="bdown"><div class="bdown-num c-accent">${recent.length}</div><div class="bdown-label">Decisions made</div></div>
+        <div class="bdown"><div class="bdown-num c-green">${pos.length}</div><div class="bdown-label">Positive outcomes</div></div>
+        <div class="bdown"><div class="bdown-num c-amber">${pend.length}</div><div class="bdown-label">Pending review</div></div>
+      </div>
+    </div>
+    <div class="report-card">
+      <h3>📝 Stakeholder narrative</h3>
+      <div class="narrative-box" id="narrativeBox">${narrative}</div>
+    </div>
+    <div class="report-card">
+      <h3>✅ Decision by decision</h3>
+      ${recent.map(d=>`
+        <div class="decision-item">
+          <div class="di-dot dot-${d.outcome==='Positive'?'pos':d.outcome==='Negative'?'neg':'pend'}"></div>
+          <div class="di-content">
+            <strong>${d.decision}</strong>
+            ${d.result?`<div style="margin-top:4px;color:var(--green);font-size:12px">→ ${d.result}</div>`:''}
+            <div class="di-meta">${fmtDate(d.date)} · ${d.platform} · ${d.type}</div>
+          </div>
+        </div>`).join('')}
+    </div>
+    ${pos.filter(d=>d.learning).length?`
+    <div class="report-card">
+      <h3>💡 Key learnings</h3>
+      ${pos.filter(d=>d.learning).map(d=>`
+        <div class="learning-item">
+          <span style="color:var(--green);font-size:16px">✓</span>
+          <span>${d.learning}</span>
+        </div>`).join('')}
+    </div>`:''}`;
+}
+
+function copyNarrative(){
+  const n=document.getElementById('narrativeBox');
+  if(!n) return;
+  navigator.clipboard.writeText(n.textContent).then(()=>showToast('Narrative copied ✓'));
+}
+
+function renderPatterns(){
+  const el=document.getElementById('patternsContent');
+  if(decisions.length<3){
+    el.innerHTML=`<div class="empty-state"><div class="empty-icon">🔍</div><h3>Not enough data yet</h3><p>Log at least 5 decisions with outcomes to start seeing patterns.</p></div>`;
+    return;
+  }
+  const byP={};const byT={};
+  decisions.forEach(d=>{
+    if(!byP[d.platform]) byP[d.platform]={pos:0,neg:0,total:0};
+    byP[d.platform].total++;
+    if(d.outcome==='Positive') byP[d.platform].pos++;
+    if(d.outcome==='Negative') byP[d.platform].neg++;
+    if(!byT[d.type]) byT[d.type]={pos:0,neg:0,total:0};
+    byT[d.type].total++;
+    if(d.outcome==='Positive') byT[d.type].pos++;
+    if(d.outcome==='Negative') byT[d.type].neg++;
+  });
+  const learnings=decisions.filter(d=>d.learning).slice(0,10);
+  el.innerHTML=`
+    <div class="pattern-grid">
+      <div class="pattern-card">
+        <h4>Win rate by platform</h4>
+        ${Object.entries(byP).map(([p,v])=>{
+          const r=v.pos+v.neg>0?Math.round((v.pos/(v.pos+v.neg))*100):0;
+          const col=r>=60?'var(--green)':r<40&&v.pos+v.neg>0?'var(--red)':'var(--amber)';
+          return `<div class="prow"><span>${p}</span><div style="display:flex;align-items:center;gap:8px"><div class="pbar-wrap"><div class="pbar" style="width:${r}%;background:${col}"></div></div><span style="font-size:12px;font-weight:600;color:${col};min-width:32px">${v.pos+v.neg>0?r+'%':'—'}</span></div></div>`;
+        }).join('')}
+      </div>
+      <div class="pattern-card">
+        <h4>Win rate by category</h4>
+        ${Object.entries(byT).map(([t,v])=>{
+          const r=v.pos+v.neg>0?Math.round((v.pos/(v.pos+v.neg))*100):0;
+          const col=r>=60?'var(--green)':r<40&&v.pos+v.neg>0?'var(--red)':'var(--amber)';
+          const short={'Budget & Bidding':'Budget & Bids','Audience & Targeting':'Audience','Creative & Messaging':'Creative','Landing Page & CRO':'Landing Page','Campaign Structure':'Structure','AB Test':'AB Test','Strategy Shift':'Strategy'};
+          return `<div class="prow"><span>${short[t]||t}</span><div style="display:flex;align-items:center;gap:8px"><div class="pbar-wrap"><div class="pbar" style="width:${r}%;background:${col}"></div></div><span style="font-size:12px;font-weight:600;color:${col};min-width:32px">${v.pos+v.neg>0?r+'%':'—'}</span></div></div>`;
+        }).join('')}
+      </div>
+    </div>
+    <div class="report-card">
+      <h3>💡 Learnings library</h3>
+      ${learnings.length?learnings.map(d=>`
+        <div class="learning-item">
+          <span style="color:var(--accent);font-size:13px">→</span>
+          <div><div>${d.learning}</div><div style="font-size:11px;color:var(--muted);margin-top:3px">${d.platform} · ${d.type} · ${fmtDate(d.date)}</div></div>
+        </div>`).join('')
+      :`<p style="font-size:13px;color:var(--muted)">No learnings yet. When you update a decision outcome, add a learning and it will appear here.</p>`}
+    </div>`;
+}
+
+function exportData(){
+  const blob=new Blob([JSON.stringify(decisions,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='marketing-journal-'+new Date().toISOString().split('T')[0]+'.json';
+  a.click();
+  showToast('Exported ✓');
+}
+
+function importData(){
+  const input=document.createElement('input');
+  input.type='file'; input.accept='.json';
+  input.onchange=e=>{
+    const f=e.target.files[0]; if(!f) return;
+    const r=new FileReader();
+    r.onload=ev=>{ try{ const d=JSON.parse(ev.target.result); if(Array.isArray(d)){ decisions=d; save(); renderJournal(); renderStats(); showToast('Imported '+d.length+' decisions ✓'); } }catch{ alert('Invalid file.'); } };
+    r.readAsText(f);
+  };
+  input.click();
+}
+
+renderStats();
+renderJournal();
+</script>
+</body>
+</html>
