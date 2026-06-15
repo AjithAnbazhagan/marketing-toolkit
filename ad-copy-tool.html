@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ad Copy Studio</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --bg:#f5f7ff;--surface:#fff;--border:#e2e6f3;
+  --accent:#1450F5;--accent-light:#e8edff;--accent-hover:#0e3fd4;
+  --green:#0d9f6e;--green-bg:#e6f7f2;
+  --amber:#d97706;--amber-bg:#fef3e2;
+  --red:#dc2626;--red-bg:#fef2f2;
+  --li:#0077b5;--li-bg:#e0f0ff;
+  --meta:#1877f2;--meta-bg:#ede9fe;
+  --google:#d97706;--google-bg:#fef3e2;
+  --text:#0f172a;--text2:#334155;--muted:#64748b;--muted2:#94a3b8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;min-height:100vh;}
+
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(20,80,245,.06);}
+.logo{display:flex;align-items:center;gap:9px;}
+.logo-icon{width:30px;height:30px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;}
+.logo-text{font-size:14px;font-weight:700;letter-spacing:-.3px;}
+.logo-text span{color:var(--accent);}
+.back-btn{background:var(--accent-light);border:none;border-radius:7px;color:var(--accent);cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:6px 12px;text-decoration:none;}
+
+/* LAYOUT */
+.app{display:grid;grid-template-columns:260px 1fr;height:calc(100vh - 56px);}
+
+/* LEFT SIDEBAR */
+.sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.sidebar-top{padding:16px;border-bottom:1px solid var(--border);}
+.slabel{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted2);margin-bottom:8px;}
+.ff{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+.ff label{font-size:11px;font-weight:600;color:var(--text2);}
+.ff input,.ff select,.ff textarea{background:var(--bg);border:1.5px solid var(--border);border-radius:7px;color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;width:100%;outline:none;transition:border-color .2s;}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(20,80,245,.08);}
+.ff input::placeholder,.ff textarea::placeholder{color:var(--muted2);}
+.ff textarea{min-height:60px;resize:vertical;}
+.divider{height:1px;background:var(--border);margin:10px 0;}
+
+.platform-tabs{display:flex;border-bottom:1px solid var(--border);}
+.ptab{flex:1;padding:10px 6px;font-size:11px;font-weight:600;text-align:center;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s;}
+.ptab:hover{color:var(--text2);}
+.ptab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+.adtype-list{flex:1;overflow-y:auto;padding:8px;}
+.adtype-item{padding:9px 10px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:3px;transition:all .2s;display:flex;align-items:center;justify-content:space-between;}
+.adtype-item:hover{background:var(--bg);}
+.adtype-item.active{background:var(--accent-light);color:var(--accent);}
+.adtype-versions{font-size:10px;background:var(--accent);color:#fff;border-radius:10px;padding:1px 6px;font-weight:600;}
+.adtype-versions-muted{font-size:10px;background:var(--border);color:var(--muted);border-radius:10px;padding:1px 6px;}
+
+/* MAIN CONTENT */
+.main{display:flex;flex-direction:column;overflow:hidden;}
+.main-header{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.main-title{font-size:14px;font-weight:700;color:var(--text);}
+.main-subtitle{font-size:11px;color:var(--muted);margin-top:2px;}
+.main-actions{display:flex;gap:8px;align-items:center;flex-shrink:0;}
+.btn-sm{border:none;border-radius:7px;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:7px 14px;transition:all .2s;}
+.btn-accent{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(20,80,245,.25);}
+.btn-accent:hover{background:var(--accent-hover);}
+.btn-outline{background:var(--surface);border:1.5px solid var(--border);color:var(--text2);}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent);}
+.btn-green{background:var(--green);color:#fff;}
+.btn-green:hover{background:#0a8560;}
+
+/* VERSIONS BAR */
+.versions-bar{background:var(--bg);border-bottom:1px solid var(--border);padding:8px 20px;display:flex;align-items:center;gap:8px;overflow-x:auto;}
+.ver-btn{border:1.5px solid var(--border);border-radius:7px;background:var(--surface);color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;padding:5px 12px;white-space:nowrap;transition:all .2s;}
+.ver-btn:hover{border-color:var(--accent);color:var(--accent);}
+.ver-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.add-ver-btn{border:1.5px dashed var(--border);border-radius:7px;background:transparent;color:var(--muted2);cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;padding:5px 12px;white-space:nowrap;transition:all .2s;}
+.add-ver-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* EDITOR + PREVIEW */
+.editor-preview{flex:1;display:grid;grid-template-columns:1fr 420px;overflow:hidden;}
+
+/* EDITOR */
+.editor{padding:20px;overflow-y:auto;}
+.goals-strip{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.goal-tag{font-size:10px;font-weight:600;padding:3px 8px;border-radius:4px;}
+.gt-awareness{background:#e0f0ff;color:#0369a1;}
+.gt-lead{background:var(--green-bg);color:var(--green);}
+.gt-traffic{background:var(--accent-light);color:var(--accent);}
+.gt-engagement{background:#fce7f3;color:#be185d;}
+.gt-sales{background:var(--green-bg);color:var(--green);}
+.gt-app{background:var(--amber-bg);color:var(--amber);}
+.gt-event{background:#f5f3ff;color:#7c3aed;}
+.gt-job{background:var(--amber-bg);color:var(--amber);}
+
+.field-block{margin-bottom:14px;}
+.field-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+.field-label{font-size:11px;font-weight:600;color:var(--text2);}
+.char-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;}
+.cb-ok{background:var(--green-bg);color:var(--green);}
+.cb-warn{background:var(--amber-bg);color:var(--amber);}
+.cb-over{background:var(--red-bg);color:var(--red);}
+.field-input{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;padding:9px 12px;width:100%;outline:none;transition:border-color .2s;resize:vertical;}
+.field-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(20,80,245,.08);}
+.field-input.f-over{border-color:var(--red);}
+.field-input.f-warn{border-color:var(--amber);}
+.field-hint{font-size:10px;color:var(--muted2);margin-top:3px;}
+
+.editor-actions{display:flex;gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);}
+
+/* PREVIEW PANEL */
+.preview-panel{border-left:1px solid var(--border);background:var(--bg);display:flex;flex-direction:column;overflow:hidden;}
+.preview-header{padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:space-between;}
+.preview-title{font-size:11px;font-weight:600;color:var(--text2);}
+.preview-scroll{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;align-items:center;gap:16px;}
+
+/* ── LINKEDIN PREVIEW ── */
+.li-card{background:#fff;border-radius:8px;border:1px solid #e0e0e0;width:100%;max-width:360px;font-family:'Inter',sans-serif;box-shadow:0 1px 4px rgba(0,0,0,.08);}
+.li-card-header{padding:12px;display:flex;align-items:center;gap:8px;}
+.li-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0077b5,#00a0dc);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700;flex-shrink:0;}
+.li-name{font-size:12px;font-weight:600;color:#000;}
+.li-meta{font-size:10px;color:#666;}
+.li-sponsored{font-size:10px;color:#666;margin-top:1px;}
+.li-body-text{padding:0 12px 10px;font-size:12px;color:#000;line-height:1.5;}
+.li-image-box{width:100%;aspect-ratio:1.91/1;background:#f0f4f8;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:12px;border-top:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0;}
+.li-image-box img{width:100%;height:100%;object-fit:cover;}
+.li-image-square{width:100%;aspect-ratio:1/1;background:#f0f4f8;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:12px;}
+.li-below{padding:8px 12px;border-top:1px solid #e0e0e0;}
+.li-headline{font-size:13px;font-weight:700;color:#000;line-height:1.3;}
+.li-desc{font-size:11px;color:#666;margin-top:2px;}
+.li-cta-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px;}
+.li-cta-btn{background:#0077b5;color:#fff;border:none;border-radius:4px;font-size:12px;font-weight:600;padding:6px 16px;cursor:default;}
+.li-reactions{display:flex;gap:10px;padding:8px 12px;border-top:1px solid #e0e0e0;font-size:11px;color:#666;}
+
+/* CAROUSEL PREVIEW */
+.carousel-wrap{width:100%;max-width:360px;}
+.carousel-slides{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;}
+.carousel-slide{flex-shrink:0;width:160px;}
+.slide-image{width:160px;height:160px;background:#f0f4f8;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:11px;border:1px solid #e0e0e0;}
+.slide-hl{font-size:11px;font-weight:600;color:#000;margin-top:5px;line-height:1.3;}
+
+/* META PREVIEW */
+.meta-card{background:#fff;border-radius:8px;border:1px solid #ddd;width:100%;max-width:360px;font-family:'Inter',sans-serif;box-shadow:0 1px 4px rgba(0,0,0,.08);}
+.meta-header{padding:10px 12px;display:flex;align-items:center;gap:8px;}
+.meta-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#1877f2,#42a5f5);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0;}
+.meta-name{font-size:12px;font-weight:700;color:#050505;}
+.meta-sponsored{font-size:11px;color:#65676b;display:flex;align-items:center;gap:4px;}
+.meta-primary{padding:0 12px 10px;font-size:12px;color:#050505;line-height:1.5;}
+.meta-image-box{width:100%;aspect-ratio:1/1;background:#f0f4f8;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:12px;}
+.meta-image-box img{width:100%;height:100%;object-fit:cover;}
+.meta-below{padding:8px 12px;background:#f0f2f5;border-top:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;}
+.meta-hl{font-size:13px;font-weight:700;color:#050505;}
+.meta-desc{font-size:11px;color:#65676b;}
+.meta-cta-btn{background:#e4e6eb;border:none;border-radius:6px;font-size:12px;font-weight:600;padding:6px 12px;color:#050505;cursor:default;flex-shrink:0;}
+
+/* STORY PREVIEW */
+.story-card{width:160px;aspect-ratio:9/16;background:linear-gradient(135deg,#1877f2,#7c3aed);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;position:relative;overflow:hidden;}
+.story-text{color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:1.4;z-index:1;}
+.story-cta{position:absolute;bottom:16px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;color:#fff;font-size:10px;font-weight:600;padding:5px 14px;}
+
+/* GOOGLE PREVIEW */
+.google-card{background:#fff;border-radius:8px;border:1px solid #ddd;width:100%;max-width:360px;padding:12px;font-family:'Inter',sans-serif;}
+.google-url{font-size:11px;color:#3c4043;margin-bottom:3px;display:flex;align-items:center;gap:4px;}
+.google-favicon{width:14px;height:14px;background:var(--amber);border-radius:2px;display:inline-block;}
+.google-hl{font-size:16px;color:#1a0dab;font-weight:400;line-height:1.3;margin-bottom:4px;}
+.google-desc{font-size:13px;color:#4d5156;line-height:1.4;}
+.google-ext{font-size:12px;color:#1a0dab;margin-top:6px;}
+
+/* YT PREVIEW */
+.yt-card{background:#000;border-radius:8px;overflow:hidden;width:100%;max-width:360px;}
+.yt-video-area{aspect-ratio:16/9;background:#111;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;position:relative;}
+.yt-skip{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.7);color:#fff;font-size:11px;padding:4px 10px;border-radius:3px;}
+.yt-cta-overlay{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.9);border-radius:3px;font-size:11px;font-weight:600;padding:4px 10px;color:#000;}
+.yt-companion{background:#fff;padding:10px;display:flex;gap:10px;align-items:flex-start;}
+.yt-comp-img{width:60px;height:60px;background:#f0f4f8;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:#94a3b8;}
+.yt-comp-hl{font-size:12px;font-weight:600;color:#000;}
+.yt-comp-btn{background:var(--google);color:#fff;border:none;border-radius:3px;font-size:11px;font-weight:600;padding:4px 10px;margin-top:5px;cursor:default;}
+
+/* INMAIL */
+.inmail-card{background:#fff;border-radius:8px;border:1px solid #e0e0e0;width:100%;max-width:360px;overflow:hidden;}
+.inmail-header{background:#f3f6f8;padding:10px 12px;border-bottom:1px solid #e0e0e0;font-size:11px;color:#666;}
+.inmail-subject{padding:10px 12px;font-size:12px;font-weight:700;color:#000;border-bottom:1px solid #e0e0e0;}
+.inmail-body{padding:12px;font-size:12px;color:#333;line-height:1.6;max-height:120px;overflow:hidden;}
+.inmail-cta-row{padding:10px 12px;border-top:1px solid #e0e0e0;}
+.inmail-cta{background:#0077b5;color:#fff;border:none;border-radius:4px;font-size:12px;font-weight:600;padding:7px 18px;cursor:default;}
+
+/* EMPTY PREVIEW */
+.preview-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px;color:var(--muted2);text-align:center;padding:20px;}
+.preview-empty-icon{font-size:32px;opacity:.3;}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;font-size:13px;font-weight:500;padding:11px 18px;border-radius:10px;z-index:999;transform:translateY(60px);opacity:0;transition:all .3s;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;}
+.modal{background:var(--surface);border-radius:16px;padding:28px;width:100%;max-width:500px;box-shadow:0 20px 60px rgba(20,80,245,.15);}
+.modal h2{font-size:16px;font-weight:700;margin-bottom:4px;}
+.modal-sub{font-size:12px;color:var(--muted);margin-bottom:16px;}
+.prompt-box{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px;font-size:12px;line-height:1.7;color:var(--text2);max-height:200px;overflow-y:auto;white-space:pre-wrap;margin-bottom:12px;}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;}
+.btn-p{background:var(--accent);border:none;border-radius:8px;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;padding:9px 18px;}
+.btn-c{background:transparent;border:1.5px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;padding:9px 18px;}
+
+.hidden{display:none!important;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">✍️</div>
+    <div class="logo-text">Ad Copy <span>Studio</span></div>
+  </div>
+  <a class="back-btn" href="./hub.html">← Back to Hub</a>
+</header>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-top">
+      <div class="slabel">Campaign Context</div>
+      <div class="ff">
+        <label>Brand Name</label>
+        <input type="text" id="brandName" placeholder="e.g. Salesforce, HubSpot" oninput="refreshPreview()"/>
+      </div>
+      <div class="ff">
+        <label>Key Benefit</label>
+        <textarea id="benefit" placeholder="e.g. Automates campaign reporting in minutes" oninput="refreshPreview()"></textarea>
+      </div>
+      <div class="ff">
+        <label>Target Audience</label>
+        <input type="text" id="audience" placeholder="e.g. Marketing Directors, IT Managers" oninput="refreshPreview()"/>
+      </div>
+      <div class="ff">
+        <label>CTA Goal</label>
+        <select id="ctaGoal" onchange="refreshPreview()">
+          <option>Book a Demo</option><option>Start Free Trial</option>
+          <option>Download Guide</option><option>Learn More</option>
+          <option>Get Started</option><option>Contact Sales</option>
+          <option>Sign Up Free</option>
+        </select>
+      </div>
+      <div class="divider"></div>
+      <button class="btn-sm btn-accent" style="width:100%" onclick="generateAIPrompt()">⚡ Generate with AI</button>
+    </div>
+
+    <div class="platform-tabs">
+      <div class="ptab active" onclick="switchPlatform('linkedin')" id="ptab-linkedin">LinkedIn</div>
+      <div class="ptab" onclick="switchPlatform('meta')" id="ptab-meta">Meta</div>
+      <div class="ptab" onclick="switchPlatform('google')" id="ptab-google">Google</div>
+    </div>
+
+    <div class="adtype-list" id="adtypeList"></div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="main-header">
+      <div>
+        <div class="main-title" id="mainTitle">Select an ad type</div>
+        <div class="main-subtitle" id="mainSubtitle">Choose a platform and ad type from the left</div>
+      </div>
+      <div class="main-actions">
+        <button class="btn-sm btn-outline" onclick="copyCurrentVersion()">Copy Fields</button>
+        <button class="btn-sm btn-green" onclick="saveCurrentVersion()">Save Version</button>
+      </div>
+    </div>
+
+    <div class="versions-bar" id="versionsBar">
+      <span style="font-size:11px;color:var(--muted2);padding:5px 0;">Select an ad type to start writing</span>
+    </div>
+
+    <div class="editor-preview">
+      <div class="editor" id="editor">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:300px;color:var(--muted2);text-align:center;gap:10px;">
+          <div style="font-size:32px;opacity:.3;">✍️</div>
+          <div style="font-size:13px;">Select a platform and ad type from the left to start writing</div>
+        </div>
+      </div>
+
+      <div class="preview-panel">
+        <div class="preview-header">
+          <span class="preview-title">📱 Ad Preview</span>
+          <span style="font-size:10px;color:var(--muted2);">Live — updates as you type</span>
+        </div>
+        <div class="preview-scroll" id="previewScroll">
+          <div class="preview-empty">
+            <div class="preview-empty-icon">👁</div>
+            <div style="font-size:12px;">Ad preview will appear here once you select an ad type and start typing</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AI MODAL -->
+<div class="modal-overlay hidden" id="aiModal">
+  <div class="modal">
+    <h2>⚡ AI Prompt Ready</h2>
+    <div class="modal-sub">Prompt copied to clipboard. Open Claude, paste, and get all your ad copy.</div>
+    <div class="prompt-box" id="modalPromptBox"></div>
+    <div class="modal-actions">
+      <button class="btn-c" onclick="document.getElementById('aiModal').classList.add('hidden')">Close</button>
+      <a class="btn-p" href="https://claude.ai" target="_blank" style="text-decoration:none;" onclick="copyAIPrompt()">Open Claude →</a>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const AD_TYPES = {
+  linkedin:[
+    {id:'li_single_image',name:'Single Image Ad',hasImage:true,imageRatio:'1.91:1',goals:[['Awareness','gt-awareness'],['Engagement','gt-engagement'],['Website Visits','gt-traffic'],['Lead Generation','gt-lead'],['Talent Leads','gt-job']],
+     fields:[{id:'intro',label:'Introductory Text',max:600,rows:3,hint:'Main ad body above the image'},{id:'headline',label:'Headline',max:70,rows:1,hint:'Bold text below the image'},{id:'desc',label:'Description',max:100,rows:1,hint:'Below headline — not always shown'}]},
+    {id:'li_carousel',name:'Carousel Ad',hasCarousel:true,goals:[['Awareness','gt-awareness'],['Engagement','gt-engagement'],['Website Visits','gt-traffic'],['Lead Generation','gt-lead']],
+     fields:[{id:'intro',label:'Introductory Text',max:255,rows:2,hint:'Above the carousel'},{id:'card1',label:'Card 1 Headline',max:45,rows:1},{id:'card2',label:'Card 2 Headline',max:45,rows:1},{id:'card3',label:'Card 3 Headline',max:45,rows:1},{id:'card4',label:'Card 4 Headline',max:45,rows:1,hint:'Optional'}]},
+    {id:'li_video',name:'Video Ad',hasVideo:true,goals:[['Awareness','gt-awareness'],['Engagement','gt-engagement'],['Website Visits','gt-traffic'],['Lead Generation','gt-lead']],
+     fields:[{id:'intro',label:'Introductory Text',max:600,rows:3,hint:'Above the video'},{id:'headline',label:'Headline',max:70,rows:1},{id:'desc',label:'Description',max:100,rows:1}]},
+    {id:'li_text',name:'Text Ad',hasImage:false,goals:[['Website Visits','gt-traffic'],['Lead Generation','gt-lead']],
+     fields:[{id:'headline',label:'Headline',max:25,rows:1,hint:'Very short — grab attention fast'},{id:'desc',label:'Description',max:75,rows:2}]},
+    {id:'li_spotlight',name:'Spotlight Ad',hasImage:true,imageRatio:'1:1',goals:[['Awareness','gt-awareness'],['Website Visits','gt-traffic'],['Job Applicants','gt-job']],
+     fields:[{id:'headline',label:'Headline',max:50,rows:1},{id:'sub',label:'Sub-headline',max:70,rows:1},{id:'cta',label:'CTA Button Text',max:18,rows:1,hint:'e.g. Learn More'}]},
+    {id:'li_message',name:'Message Ad (InMail)',hasInmail:true,goals:[['Lead Generation','gt-lead'],['Website Visits','gt-traffic'],['Event Registration','gt-event']],
+     fields:[{id:'subject',label:'Message Subject',max:60,rows:1},{id:'body',label:'Message Body',max:1000,rows:5,hint:'Keep it conversational'},{id:'cta',label:'CTA Button Text',max:20,rows:1}]},
+    {id:'li_conversation',name:'Conversation Ad',hasImage:false,goals:[['Lead Generation','gt-lead'],['Website Visits','gt-traffic'],['Engagement','gt-engagement']],
+     fields:[{id:'opening',label:'Opening Message',max:500,rows:3},{id:'btn1',label:'Button Option 1',max:25,rows:1},{id:'btn2',label:'Button Option 2',max:25,rows:1},{id:'btn3',label:'Button Option 3',max:25,rows:1,hint:'Optional'}]},
+    {id:'li_leadgen',name:'Lead Gen Form Ad',hasImage:true,imageRatio:'1.91:1',goals:[['Lead Generation','gt-lead'],['Talent Leads','gt-job']],
+     fields:[{id:'intro',label:'Introductory Text',max:600,rows:3},{id:'headline',label:'Headline',max:70,rows:1},{id:'offer',label:'Offer Headline (on form)',max:40,rows:1,hint:'e.g. Get the Free Guide'},{id:'detail',label:'Offer Details',max:160,rows:2}]},
+    {id:'li_document',name:'Document Ad',hasImage:true,imageRatio:'1.91:1',goals:[['Awareness','gt-awareness'],['Engagement','gt-engagement'],['Lead Generation','gt-lead']],
+     fields:[{id:'intro',label:'Introductory Text',max:600,rows:3},{id:'headline',label:'Headline',max:70,rows:1}]},
+    {id:'li_event',name:'Event Ad',hasImage:true,imageRatio:'1.91:1',goals:[['Event Registration','gt-event'],['Awareness','gt-awareness']],
+     fields:[{id:'intro',label:'Introductory Text',max:600,rows:3},{id:'headline',label:'Headline',max:70,rows:1,hint:'Event name or key hook'}]},
+  ],
+  meta:[
+    {id:'meta_single_image',name:'Single Image Ad',hasImage:true,imageRatio:'1:1',goals:[['Awareness','gt-awareness'],['Traffic','gt-traffic'],['Engagement','gt-engagement'],['Leads','gt-lead'],['Sales','gt-sales']],
+     fields:[{id:'primary',label:'Primary Text',max:125,rows:2,hint:'Hook first — main copy above image'},{id:'headline',label:'Headline',max:40,rows:1,hint:'Bold below image'},{id:'desc',label:'Description',max:30,rows:1,hint:'Optional'}]},
+    {id:'meta_video',name:'Single Video Ad',hasVideo:true,goals:[['Awareness','gt-awareness'],['Traffic','gt-traffic'],['Leads','gt-lead'],['Sales','gt-sales']],
+     fields:[{id:'primary',label:'Primary Text',max:125,rows:2},{id:'headline',label:'Headline',max:40,rows:1},{id:'desc',label:'Description',max:30,rows:1}]},
+    {id:'meta_carousel',name:'Carousel Ad',hasCarousel:true,goals:[['Awareness','gt-awareness'],['Traffic','gt-traffic'],['Leads','gt-lead'],['Sales','gt-sales']],
+     fields:[{id:'primary',label:'Primary Text',max:125,rows:2},{id:'card1',label:'Card 1 Headline',max:40,rows:1},{id:'card2',label:'Card 2 Headline',max:40,rows:1},{id:'card3',label:'Card 3 Headline',max:40,rows:1},{id:'card4',label:'Card 4 Headline',max:40,rows:1,hint:'Optional'}]},
+    {id:'meta_collection',name:'Collection Ad',hasImage:true,imageRatio:'1:1',goals:[['Traffic','gt-traffic'],['Sales','gt-sales']],
+     fields:[{id:'primary',label:'Primary Text',max:125,rows:2},{id:'headline',label:'Headline',max:40,rows:1}]},
+    {id:'meta_leadad',name:'Lead Ad (Instant Form)',hasImage:true,imageRatio:'1:1',goals:[['Leads','gt-lead']],
+     fields:[{id:'primary',label:'Primary Text',max:125,rows:2},{id:'headline',label:'Headline',max:40,rows:1},{id:'offer',label:'Form Headline',max:60,rows:1,hint:'What they get'},{id:'formdesc',label:'Form Description',max:150,rows:2}]},
+    {id:'meta_story',name:'Stories Ad',hasStory:true,goals:[['Awareness','gt-awareness'],['Traffic','gt-traffic'],['Leads','gt-lead'],['Sales','gt-sales']],
+     fields:[{id:'overlay',label:'Text Overlay',max:125,rows:2,hint:'Full screen — punchy and large'},{id:'swipe',label:'Swipe-Up CTA',max:25,rows:1}]},
+    {id:'meta_messenger',name:'Messenger Ad',hasImage:true,imageRatio:'1:1',goals:[['Traffic','gt-traffic'],['Leads','gt-lead'],['Sales','gt-sales']],
+     fields:[{id:'primary',label:'Primary Text',max:125,rows:2},{id:'headline',label:'Headline',max:40,rows:1},{id:'greeting',label:'Messenger Greeting',max:160,rows:2,hint:'First message — be conversational'}]},
+  ],
+  google:[
+    {id:'g_rsa',name:'Responsive Search Ad',hasGoogle:true,goals:[['Search Leads','gt-lead'],['Search Traffic','gt-traffic'],['Sales','gt-sales']],
+     fields:[{id:'h1',label:'Headline 1',max:30,rows:1},{id:'h2',label:'Headline 2',max:30,rows:1},{id:'h3',label:'Headline 3',max:30,rows:1},{id:'h4',label:'Headline 4',max:30,rows:1,hint:'Optional'},{id:'h5',label:'Headline 5',max:30,rows:1,hint:'Optional'},{id:'d1',label:'Description 1',max:90,rows:2,hint:'Full sentence with CTA'},{id:'d2',label:'Description 2',max:90,rows:2}]},
+    {id:'g_pmax',name:'Performance Max',hasGoogle:true,goals:[['Leads','gt-lead'],['Sales','gt-sales'],['Store Visits','gt-traffic']],
+     fields:[{id:'h1',label:'Headline 1',max:30,rows:1},{id:'h2',label:'Headline 2',max:30,rows:1},{id:'h3',label:'Headline 3',max:30,rows:1},{id:'lh1',label:'Long Headline 1',max:90,rows:2},{id:'lh2',label:'Long Headline 2',max:90,rows:2},{id:'d1',label:'Description 1',max:90,rows:2},{id:'d2',label:'Description 2',max:90,rows:2},{id:'bname',label:'Business Name',max:25,rows:1}]},
+    {id:'g_display',name:'Display Ad',hasImage:true,imageRatio:'1.91:1',goals:[['Awareness','gt-awareness'],['Traffic','gt-traffic'],['Sales','gt-sales'],['Remarketing','gt-engagement']],
+     fields:[{id:'shorthl',label:'Short Headline',max:30,rows:1},{id:'longhl',label:'Long Headline',max:90,rows:2},{id:'desc',label:'Description',max:90,rows:2},{id:'bname',label:'Business Name',max:25,rows:1}]},
+    {id:'g_video',name:'Video Ad (YouTube)',hasYoutube:true,goals:[['Awareness','gt-awareness'],['Reach','gt-traffic'],['Leads','gt-lead'],['Sales','gt-sales']],
+     fields:[{id:'hook',label:'Video Hook (first 5 sec)',max:200,rows:3,hint:'Critical — decides skip or watch'},{id:'headline',label:'Companion Banner Headline',max:15,rows:1},{id:'desc',label:'Companion Description',max:70,rows:2},{id:'cta',label:'CTA Overlay Text',max:15,rows:1}]},
+    {id:'g_app',name:'App Campaign',hasGoogle:true,goals:[['App Installs','gt-app'],['App Engagement','gt-app']],
+     fields:[{id:'l1',label:'Ad Text Line 1',max:30,rows:1},{id:'l2',label:'Ad Text Line 2',max:30,rows:1},{id:'l3',label:'Ad Text Line 3',max:30,rows:1},{id:'l4',label:'Ad Text Line 4',max:30,rows:1,hint:'Optional'}]},
+    {id:'g_shopping',name:'Shopping Ad',hasImage:true,imageRatio:'1:1',goals:[['Sales','gt-sales'],['Store Visits','gt-traffic']],
+     fields:[{id:'title',label:'Product Title',max:150,rows:2,hint:'Include product name and key attributes'},{id:'desc',label:'Product Description',max:5000,rows:4}]},
+    {id:'g_callonly',name:'Call-Only Ad',hasGoogle:true,goals:[['Leads','gt-lead'],['Store Visits','gt-traffic']],
+     fields:[{id:'h1',label:'Headline 1',max:30,rows:1},{id:'h2',label:'Headline 2',max:30,rows:1},{id:'d1',label:'Description 1',max:90,rows:2,hint:'Why call — clear benefit'},{id:'d2',label:'Description 2',max:90,rows:2}]},
+  ]
+};
+
+let currentPlatform = 'linkedin';
+let currentAdTypeId = null;
+let currentVersionIdx = 0;
+let versions = {}; // versions[adTypeId] = [{fields:{...}}, ...]
+let history = JSON.parse(localStorage.getItem('adcopy_v2_history') || '[]');
+let aiPrompt = '';
+
+function showToast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+
+function switchPlatform(p) {
+  currentPlatform = p;
+  document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+  document.getElementById('ptab-' + p).classList.add('active');
+  currentAdTypeId = null;
+  renderAdTypeList();
+  document.getElementById('mainTitle').textContent = 'Select an ad type';
+  document.getElementById('mainSubtitle').textContent = p.charAt(0).toUpperCase()+p.slice(1)+' — choose an ad type from the left';
+  document.getElementById('editor').innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:300px;color:var(--muted2);text-align:center;gap:10px;"><div style="font-size:32px;opacity:.3;">✍️</div><div style="font-size:13px;">Select an ad type to start writing</div></div>';
+  document.getElementById('versionsBar').innerHTML = '<span style="font-size:11px;color:var(--muted2);padding:5px 0;">Select an ad type to start</span>';
+  document.getElementById('previewScroll').innerHTML = '<div class="preview-empty"><div class="preview-empty-icon">👁</div><div style="font-size:12px;">Preview appears here once you select an ad type</div></div>';
+}
+
+function renderAdTypeList() {
+  const list = document.getElementById('adtypeList');
+  list.innerHTML = AD_TYPES[currentPlatform].map(at => {
+    const vCount = versions[at.id]?.length || 0;
+    return `<div class="adtype-item ${at.id === currentAdTypeId ? 'active' : ''}" onclick="selectAdType('${at.id}')">
+      <span>${at.name}</span>
+      ${vCount > 0 ? `<span class="adtype-versions">${vCount}v</span>` : `<span class="adtype-versions-muted">+</span>`}
+    </div>`;
+  }).join('');
+}
+
+function selectAdType(id) {
+  currentAdTypeId = id;
+  currentVersionIdx = 0;
+  if (!versions[id]) versions[id] = [{ fields: {} }];
+  renderAdTypeList();
+  const at = getAdType(id);
+  document.getElementById('mainTitle').textContent = at.name;
+  document.getElementById('mainSubtitle').textContent = getPlatformName() + ' · ' + at.goals.map(g=>g[0]).join(', ');
+  renderVersionsBar();
+  renderEditor();
+  refreshPreview();
+}
+
+function getAdType(id) {
+  for (const p of Object.values(AD_TYPES)) {
+    const found = p.find(a => a.id === id);
+    if (found) return found;
+  }
+  return null;
+}
+
+function getPlatformName() {
+  return { linkedin:'LinkedIn Ads', meta:'Meta Ads', google:'Google Ads' }[currentPlatform];
+}
+
+function renderVersionsBar() {
+  const vList = versions[currentAdTypeId] || [{ fields: {} }];
+  const bar = document.getElementById('versionsBar');
+  bar.innerHTML = vList.map((v, i) =>
+    `<button class="ver-btn ${i === currentVersionIdx ? 'active' : ''}" onclick="switchVersion(${i})">Version ${i+1}</button>`
+  ).join('') + `<button class="add-ver-btn" onclick="addVersion()">+ Add Version</button>`;
+}
+
+function switchVersion(idx) {
+  saveFieldsToVersion();
+  currentVersionIdx = idx;
+  renderVersionsBar();
+  renderEditor();
+  refreshPreview();
+}
+
+function addVersion() {
+  saveFieldsToVersion();
+  versions[currentAdTypeId].push({ fields: {} });
+  currentVersionIdx = versions[currentAdTypeId].length - 1;
+  renderVersionsBar();
+  renderAdTypeList();
+  renderEditor();
+  refreshPreview();
+  showToast('Version ' + (currentVersionIdx + 1) + ' added');
+}
+
+function saveFieldsToVersion() {
+  if (!currentAdTypeId) return;
+  const at = getAdType(currentAdTypeId);
+  if (!at || !versions[currentAdTypeId]) return;
+  const fields = {};
+  at.fields.forEach(f => {
+    const el = document.getElementById('field_' + f.id);
+    if (el) fields[f.id] = el.value;
+  });
+  versions[currentAdTypeId][currentVersionIdx] = { fields };
+}
+
+function renderEditor() {
+  const at = getAdType(currentAdTypeId);
+  if (!at) return;
+  const ver = versions[currentAdTypeId][currentVersionIdx] || { fields: {} };
+  const editor = document.getElementById('editor');
+
+  let html = `<div class="goals-strip">${at.goals.map(g => `<span class="goal-tag ${g[1]}">${g[0]}</span>`).join('')}</div>`;
+
+  at.fields.forEach(f => {
+    const val = ver.fields[f.id] || '';
+    const pct = val.length / f.max;
+    const cc = val.length + ' / ' + f.max;
+    const ccClass = val.length > f.max ? 'cb-over' : pct > 0.85 ? 'cb-warn' : 'cb-ok';
+    const fClass = val.length > f.max ? 'f-over' : pct > 0.85 ? 'f-warn' : '';
+    html += `<div class="field-block">
+      <div class="field-top">
+        <span class="field-label">${f.label}</span>
+        <span class="char-badge ${ccClass}" id="cb_${f.id}">${cc}</span>
+      </div>
+      ${f.rows > 1
+        ? `<textarea class="field-input ${fClass}" id="field_${f.id}" rows="${f.rows}" oninput="onFieldInput('${f.id}',${f.max})">${val}</textarea>`
+        : `<input type="text" class="field-input ${fClass}" id="field_${f.id}" value="${val.replace(/"/g,'&quot;')}" oninput="onFieldInput('${f.id}',${f.max})"/>`
+      }
+      ${f.hint ? `<div class="field-hint">${f.hint}</div>` : ''}
+    </div>`;
+  });
+
+  editor.innerHTML = html;
+}
+
+function onFieldInput(fid, max) {
+  const el = document.getElementById('field_' + fid);
+  const cb = document.getElementById('cb_' + fid);
+  if (!el || !cb) return;
+  const len = el.value.length;
+  const pct = len / max;
+  cb.textContent = len + ' / ' + max;
+  el.classList.remove('f-over','f-warn');
+  cb.className = 'char-badge';
+  if (len > max) { cb.classList.add('cb-over'); el.classList.add('f-over'); }
+  else if (pct > 0.85) { cb.classList.add('cb-warn'); el.classList.add('f-warn'); }
+  else cb.classList.add('cb-ok');
+  refreshPreview();
+}
+
+function getFieldVal(fid) {
+  const el = document.getElementById('field_' + fid);
+  return el ? el.value.trim() : '';
+}
+
+function refreshPreview() {
+  if (!currentAdTypeId) return;
+  const at = getAdType(currentAdTypeId);
+  if (!at) return;
+  const brand = document.getElementById('brandName').value.trim() || 'Your Brand';
+  const cta = document.getElementById('ctaGoal').value;
+  const ps = document.getElementById('previewScroll');
+
+  let html = '';
+
+  // LinkedIn previews
+  if (at.hasImage && currentPlatform === 'linkedin') {
+    const intro = getFieldVal('intro');
+    const hl = getFieldVal('headline') || getFieldVal('sub') || getFieldVal('offer') || 'Your headline appears here';
+    const desc = getFieldVal('desc') || getFieldVal('detail') || '';
+    html = `<div style="font-size:10px;color:var(--muted2);margin-bottom:4px;text-align:center;">LinkedIn · ${at.name}</div>
+    <div class="li-card">
+      <div class="li-card-header">
+        <div class="li-avatar">${brand.charAt(0).toUpperCase()}</div>
+        <div><div class="li-name">${brand}</div><div class="li-meta">Followers · <span class="li-sponsored">Sponsored</span></div></div>
+      </div>
+      ${intro ? `<div class="li-body-text">${intro.slice(0,150)}${intro.length>150?'…':''}</div>` : ''}
+      <div class="li-image-box">📷 Image will appear here<br/><span style="font-size:10px;margin-top:4px;display:block;">Recommended: 1200 × 628px</span></div>
+      <div class="li-below">
+        <div class="li-headline">${hl.slice(0,70)}</div>
+        ${desc ? `<div class="li-desc">${desc.slice(0,100)}</div>` : ''}
+        <div class="li-cta-row"><span></span><button class="li-cta-btn">${cta}</button></div>
+      </div>
+      <div class="li-reactions">👍 Like &nbsp; 💬 Comment &nbsp; ↗ Share</div>
+    </div>`;
+  }
+  else if (at.hasCarousel && currentPlatform === 'linkedin') {
+    const intro = getFieldVal('intro');
+    const cards = ['card1','card2','card3','card4'].map(c => getFieldVal(c)).filter(Boolean);
+    html = `<div style="font-size:10px;color:var(--muted2);margin-bottom:4px;text-align:center;">LinkedIn · Carousel Ad</div>
+    <div class="li-card">
+      <div class="li-card-header">
+        <div class="li-avatar">${brand.charAt(0).toUpperCase()}</div>
+        <div><div class="li-name">${brand}</div><div class="li-meta">Sponsored</div></div>
+      </div>
+      ${intro ? `<div class="li-body-text">${intro.slice(0,150)}${intro.length>150?'…':''}</div>` : ''}
+      <div class="carousel-slides" style="padding:10px;">
+        ${(cards.length ? cards : ['Card 1','Card 2','Card 3']).map((c,i) => `
+          <div class="carousel-slide">
+            <div class="slide-image">📷<br/><span style="font-size:9px">Image ${i+1}</span></div>
+            <div class="slide-hl">${c.slice(0,45)}</div>
+          </div>`).join('')}
+      </div>
+      <div style="padding:8px 12px;border-top:1px solid #e0e0e0;display:flex;justify-content:flex-end;"><button class="li-cta-btn">${cta}</button></div>
+    </div>`;
+  }
+  else if (at.hasVideo && currentPlatform === 'linkedin') {
+    const intro = getFieldVal('intro');
+    const hl = getFieldVal('headline') || 'Your headline here';
+    html = `<div style="font-size:10px;color:var(--muted2);margin-bottom:4px;text-align:center;">LinkedIn · Video Ad</div>
+    <div class="li-card">
+      <div class="li-card-header">
+        <div class="li-avatar">${brand.charAt(0).toUpperCase()}</div>
+        <div><div class="li-name">${brand}</div><div class="li-meta">Sponsored</div></div>
+      </div>
+      ${intro ? `<div class="li-body-text">${intro.slice(0,150)}${intro.length>150?'…':''}</div>` : ''}
+      <div class="li-image-box" style="background:#111;color:#fff;flex-direction:column;gap:6px;">🎬 Video will appear here<br/><span style="font-size:10px;color:#888">Recommended: 1920 × 1080px</span></div>
+      <div class="li-below"><div class="li-headline">${hl.slice(0,70)}</div><div class="li-cta-row"><span></span><button class="li-cta-btn">${cta}</button></div></div>
+      <div class="li-reactions">👍 Like &nbsp; 💬 Comment &nbsp; ↗ Share</div>
+    </div>`;
+  }
+  else if (at.hasInmail) {
+    const subject = getFieldVal('subject') || 'Message subject appears here';
+    const body = getFieldVal('body') || 'Your message body will appear here...';
+    const ctaText = getFieldVal('cta') || cta;
+    html = `<div style="font-size:10px;color:var(--muted2);margin-bottom:4px;text-align:center;">LinkedIn · Message Ad (InMail)</div>
+    <div class="inmail-card">
+      <div class="inmail-header">📧 From: ${brand} · Sponsored InMail</div>
+      <div class="inmail-subject">${subject.slice(0,60)}</div>
+      <div class="inmail-body">${body.slice(0,300)}${body.length>300?'…':''}</div>
+      <div class="inmail-cta-row"><button class="inmail-cta">${ctaText.slice(0,20)}</button></div>
+    </div>`;
+  }
+  // META previews
+  else if ((at.hasImage || at.hasVideo) && currentPlatform === 'meta' && !at.hasStory) {
+    const primary = getFieldVal('primary') || 'Your primary text appears here...';
+    const hl = getFieldVal('headline') || 'Your headline here';
+    const desc = getFieldVal('desc') || '';
+    const isVideo = at.hasVideo;
+    html = `<div style="font-size:10px;color:var(--muted2);margin-bottom:4px;text-align:center;">Meta · ${at.name}</div>
+    <div class="meta-card">
+      <div class="meta-header">
+        <div class="meta-avatar">${brand.charAt(0).toUpperCase()}</div>
+        <div><div class="meta-name">${brand}</div><div class="meta-sponsored">Sponsored · 🌐</div></div>
+      </div>
+      <div class="meta-primary">${primary.slice(0,125)}${primary.length>125?'…':''}</div>
+      <div class="meta-image-box">${isVideo ? '🎬 Video will appear here' : '📷 Image will appear here'}<br/><span style="font-size:10px;color:#94a3b8;display:block;margin-top:4px;">Recommended: 1080 × 1080px (1:1)</span></div>
+      <div class="meta-below">
+        <div><div class="meta-hl">${hl.slice(0,40)}</div>${desc?`<div class="meta-desc">${desc.slice(0,30)}</div>`:''}</div>
+        <button class="meta-cta-btn">${cta}</button>
+      </div>
+    </div>`;
+  }
+  else if (at.hasCarousel && currentPlatform === 'meta') {
+    const primary = getFieldVal('primary') || 'Your primary text here...';
+    const cards = ['card1','card2','card3','card4'].map(c => getFieldVal(c)).filter(Boolean);
+    html = `<div style="font-size:10px;color:var(--muted2);margin-bottom:4px;text-align:center;">Meta · Carousel Ad</div>
+    <div class="meta-card">
+      <div class="meta-header">
+        <div class="meta-avatar">${brand.charAt(0).toUpperCase()}</div>
+        <div><div class="meta-name">${brand}</div><div class="meta-sponsored">Sponsored · 🌐</div></div>
+      </div>
+      <div class="meta-primary">${primary.slice(0,125)}${primary.length>125?'…':''}</div>
+      <div class="carousel-slides" style="padding:10px;background:#f0f2f5;">
+        ${(cards.length ? cards : ['Card 1','Card 2','Card 3']).map((c,i) => `
+          <div class="carousel-slide">
+            <div class="slide-image" style="border-radius:4px;">📷<br/><span style="font-size:9px">Image ${i+1}</span></div>
+            <div class="slide-hl" style="font-size:10px;">${c.slice(0,40)}</div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  }
+  else if (at.hasStory) {
+    const overlay = getFieldVal('overlay') || 'Your story text here';
+    const swipe = getFieldVal('swipe') || 'Swipe Up';
+    html = `<div style="font-size:10px;color:var(--muted2);margin-bottom:4px;text-align:center;">Meta · Stories Ad · 9:16</div>
+    <div style="display:flex;justify-content:center;">
+      <div class="story-card">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:20px;">
+          <div style="font-size:10px;color:rgba(255,255,255,.6);">📷 Image / Video will appear here</div>
+          <div class="story-text">${overlay.slice(0,125)}</div>
+        </div>
+        <div class="story-cta">${swipe.slice(0,25)}</div>
+      </div>
+    </div>`;
+  }
+  // GOOGLE previews
+  else if (at.hasGoogle) {
+    const h1 = getFieldVal('h1') || getFieldVal('l1') || 'Headline 1';
+    const h2 = getFieldVal('h2') || getFieldVal('l2') || 'Headline 2';
+    const h3 = getFieldVal('h3') || getFieldVal('l3') || 'Headline 3';
+    const d1 = getFieldVal('d1') || 'Description line 1 — your key benefit and call to action appears here.';
+    const d2 = getFieldVal('d2') || '';
+    html = `<div style="font-size:10px;color:var(--muted2);margin-bottom:4px;text-align:center;">Google · ${at.name}</div>
+    <div class="google-card">
+      <div class="google-url"><span class="google-favicon"></span> yourwebsite.com › page <span style="font-size:10px;color:#3c4043;">▼</span></div>
+      <div class="google-hl">${[h1,h2,h3].filter(Boolean).map(h=>h.slice(0,30)).join(' | ')}</div>
+      <div class="google-desc">${d1.slice(0,90)}${d2 ? ' ' + d2.slice(0,90) : ''}</div>
+    </div>`;
+  }
+  else if (at.hasYoutube) {
+    const hook = getFieldVal('hook') || 'Video hook appears here...';
+    const hl = getFieldVal('headline') || 'Ad Headline';
+    const ctaText = getFieldVal('cta') || cta;
+    html = `<div style="font-size:10px;color:var(--muted2);margin-bottom:4px;text-align:center;">Google · YouTube Video Ad</div>
+    <div class="yt-card">
+      <div class="yt-video-area">
+        <div style="text-align:center;color:#888;">🎬 Video will appear here<br/><span style="font-size:10px;display:block;margin-top:4px;">Recommended: 1920 × 1080px</span></div>
+        <div class="yt-skip">Skip Ad ▶</div>
+        ${ctaText ? `<div class="yt-cta-overlay">${ctaText.slice(0,15)}</div>` : ''}
+      </div>
+      <div class="yt-companion">
+        <div class="yt-comp-img">📷</div>
+        <div><div class="yt-comp-hl">${hl.slice(0,15)}</div><div style="font-size:10px;color:#666;margin-top:2px;">${brand}</div><button class="yt-comp-btn">${cta}</button></div>
+      </div>
+    </div>`;
+  }
+  else {
+    html = `<div class="preview-empty"><div class="preview-empty-icon">👁</div><div style="font-size:12px;">Preview for this ad type</div></div>`;
+  }
+
+  ps.innerHTML = html;
+}
+
+function saveCurrentVersion() {
+  if (!currentAdTypeId) { showToast('Select an ad type first'); return; }
+  saveFieldsToVersion();
+  const at = getAdType(currentAdTypeId);
+  const ver = versions[currentAdTypeId][currentVersionIdx];
+  const lines = at.fields.map(f => ver.fields[f.id] ? `${f.label}: ${ver.fields[f.id]}` : '').filter(Boolean);
+  if (!lines.length) { showToast('Nothing to save — fill in the fields'); return; }
+  const entry = { id: Date.now(), platform: currentPlatform, adType: at.name, version: currentVersionIdx + 1, content: lines.join('\n'), time: new Date().toLocaleString() };
+  history.unshift(entry);
+  if (history.length > 100) history = history.slice(0, 100);
+  localStorage.setItem('adcopy_v2_history', JSON.stringify(history));
+  showToast('Version ' + (currentVersionIdx + 1) + ' saved ✓');
+}
+
+function copyCurrentVersion() {
+  if (!currentAdTypeId) { showToast('Select an ad type first'); return; }
+  saveFieldsToVersion();
+  const at = getAdType(currentAdTypeId);
+  const ver = versions[currentAdTypeId][currentVersionIdx];
+  const lines = at.fields.map(f => ver.fields[f.id] ? `${f.label}: ${ver.fields[f.id]}` : '').filter(Boolean);
+  if (!lines.length) { showToast('Nothing to copy — fill in the fields'); return; }
+  navigator.clipboard.writeText(`${at.name} — Version ${currentVersionIdx+1}\n${'─'.repeat(30)}\n${lines.join('\n')}`).then(() => showToast('Copied ✓'));
+}
+
+function generateAIPrompt() {
+  const brand = document.getElementById('brandName').value.trim();
+  const benefit = document.getElementById('benefit').value.trim();
+  const audience = document.getElementById('audience').value.trim();
+  const cta = document.getElementById('ctaGoal').value;
+  if (!brand) { alert('Please enter your brand name first.'); return; }
+  const at = currentAdTypeId ? getAdType(currentAdTypeId) : null;
+  const scope = at ? `AD TYPE: ${at.name}\nPLATFORM: ${getPlatformName()}\nELIGIBLE GOALS: ${at.goals.map(g=>g[0]).join(', ')}\n\nWrite copy for these fields:\n${at.fields.map(f=>`${f.label} (max ${f.max} chars):`).join('\n')}` : `Generate ad copy for ALL ad types across LinkedIn, Meta, and Google Ads.`;
+  aiPrompt = `You are an expert B2B ad copywriter.\n\nBRAND: ${brand}\nKEY BENEFIT: ${benefit||'not specified'}\nTARGET AUDIENCE: ${audience||'business professionals'}\nCTA GOAL: ${cta}\n\n${scope}\n\nBe direct, benefit-led, no fluff. Stay strictly within character limits.`;
+  document.getElementById('modalPromptBox').textContent = aiPrompt;
+  document.getElementById('aiModal').classList.remove('hidden');
+  navigator.clipboard.writeText(aiPrompt).catch(() => {});
+}
+
+function copyAIPrompt() { navigator.clipboard.writeText(aiPrompt).catch(() => {}); }
+
+// Init
+renderAdTypeList();
+</script>
+</body>
+</html>

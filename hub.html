@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ajith's Marketing Toolkit</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+:root{
+  --bg:#f5f7ff;--surface:#fff;--border:#e2e6f3;
+  --accent:#1450F5;--accent-light:#e8edff;--accent-hover:#0e3fd4;
+  --green:#0d9f6e;--green-bg:#e6f7f2;
+  --amber:#d97706;--amber-bg:#fef3e2;
+  --purple:#7c3aed;--purple-bg:#f5f3ff;
+  --text:#0f172a;--text2:#334155;--muted:#64748b;--muted2:#94a3b8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
+
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 40px;height:62px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 3px rgba(20,80,245,.06);}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-icon{width:34px;height:34px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;}
+.logo-text{font-size:15px;font-weight:700;letter-spacing:-.4px;}
+.logo-text span{color:var(--accent);}
+.header-badge{background:var(--accent-light);color:var(--accent);font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;}
+
+.hero{text-align:center;padding:56px 40px 40px;}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;margin-bottom:18px;}
+.hero h1{font-size:38px;font-weight:800;letter-spacing:-1px;color:var(--text);margin-bottom:12px;line-height:1.15;}
+.hero h1 span{color:var(--accent);}
+.hero p{font-size:15px;color:var(--muted);max-width:460px;margin:0 auto;line-height:1.7;}
+
+/* TOOLS GRID — 2x2 */
+.tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:960px;margin:0 auto;padding:0 40px 60px;}
+
+.tool-card{background:var(--surface);border:1.5px solid var(--border);border-radius:18px;padding:28px;display:flex;flex-direction:column;gap:16px;transition:border-color .2s,box-shadow .2s;position:relative;overflow:hidden;}
+.tool-card:hover{border-color:var(--accent);box-shadow:0 8px 32px rgba(20,80,245,.09);}
+.tool-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity .2s;}
+.tool-card:hover::after{opacity:1;}
+.tc-blue::after{background:var(--accent);}
+.tc-green::after{background:var(--green);}
+.tc-amber::after{background:var(--amber);}
+.tc-purple::after{background:var(--purple);}
+
+.tool-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.tool-icon{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.ti-blue{background:var(--accent-light);}
+.ti-green{background:var(--green-bg);}
+.ti-amber{background:var(--amber-bg);}
+.ti-purple{background:var(--purple-bg);}
+.tool-new-badge{background:var(--amber-bg);color:var(--amber);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;white-space:nowrap;}
+
+.tool-card h2{font-size:18px;font-weight:700;letter-spacing:-.3px;color:var(--text);}
+.tool-card p{font-size:12px;color:var(--muted);line-height:1.65;}
+
+.tool-features{display:flex;flex-direction:column;gap:6px;}
+.tf{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text2);}
+.tf-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.td-blue{background:var(--accent);}
+.td-green{background:var(--green);}
+.td-amber{background:var(--amber);}
+.td-purple{background:var(--purple);}
+
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;}
+.stat{text-align:center;}
+.stat-num{font-size:17px;font-weight:700;}
+.sn-blue{color:var(--accent);}
+.sn-green{color:var(--green);}
+.sn-amber{color:var(--amber);}
+.sn-purple{color:var(--purple);}
+.stat-label{font-size:10px;color:var(--muted);margin-top:1px;font-weight:500;}
+
+.tool-btn{display:flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:10px;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;padding:12px;text-decoration:none;transition:all .2s;margin-top:auto;box-shadow:0 3px 10px rgba(0,0,0,.1);}
+.tb-blue{background:var(--accent);box-shadow:0 4px 14px rgba(20,80,245,.25);}
+.tb-blue:hover{background:var(--accent-hover);}
+.tb-green{background:var(--green);box-shadow:0 4px 14px rgba(13,159,110,.25);}
+.tb-green:hover{background:#0a8560;}
+.tb-amber{background:var(--amber);box-shadow:0 4px 14px rgba(217,119,6,.25);}
+.tb-amber:hover{background:#b45309;}
+.tb-purple{background:var(--purple);box-shadow:0 4px 14px rgba(124,58,237,.25);}
+.tb-purple:hover{background:#6d28d9;}
+
+footer{text-align:center;padding:24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted2);}
+footer strong{color:var(--accent);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🚀</div>
+    <div class="logo-text">Ajith's <span>Marketing Toolkit</span></div>
+  </div>
+  <div class="header-badge">4 Tools · 100% Free</div>
+</header>
+
+<div class="hero">
+  <div class="hero-tag">⚡ AI-Powered Marketing Tools</div>
+  <h1>Your personal<br/><span>marketing command centre</span></h1>
+  <p>Four tools built to save time, document your work, write better ads, and track every campaign link — all in one place.</p>
+</div>
+
+<div class="tools-grid">
+
+  <!-- TOOL 1 — REPURPOSE AGENT -->
+  <div class="tool-card tc-blue">
+    <div class="tool-top">
+      <div class="tool-icon ti-blue">⚡</div>
+    </div>
+    <div>
+      <h2>Repurpose Agent</h2>
+      <p>Paste any blog URL and instantly generate platform-ready content for LinkedIn and Meta — no manual writing needed.</p>
+    </div>
+    <div class="tool-features">
+      <div class="tf"><div class="tf-dot td-blue"></div>Fetches full page content automatically</div>
+      <div class="tf"><div class="tf-dot td-blue"></div>5 LinkedIn formats + 3 Meta formats</div>
+      <div class="tf"><div class="tf-dot td-blue"></div>Character counts + image specs included</div>
+      <div class="tf"><div class="tf-dot td-blue"></div>Best performer prediction included</div>
+      <div class="tf"><div class="tf-dot td-blue"></div>No API key needed — works free via Claude</div>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-num sn-blue">8</div><div class="stat-label">Content formats</div></div>
+      <div class="stat"><div class="stat-num sn-blue">~2min</div><div class="stat-label">Per repurpose</div></div>
+      <div class="stat"><div class="stat-num sn-blue">$0</div><div class="stat-label">Cost</div></div>
+    </div>
+    <a class="tool-btn tb-blue" href="./index.html" target="_blank">Open Repurpose Agent →</a>
+  </div>
+
+  <!-- TOOL 2 — MARKETING JOURNAL -->
+  <div class="tool-card tc-green">
+    <div class="tool-top">
+      <div class="tool-icon ti-green">📓</div>
+    </div>
+    <div>
+      <h2>Marketing Decision Journal</h2>
+      <p>Log every significant campaign decision, track outcomes, and auto-generate biweekly reports for your stakeholder calls.</p>
+    </div>
+    <div class="tool-features">
+      <div class="tf"><div class="tf-dot td-green"></div>Log decisions across Google, LinkedIn and Meta</div>
+      <div class="tf"><div class="tf-dot td-green"></div>Update outcomes with one click per entry</div>
+      <div class="tf"><div class="tf-dot td-green"></div>Auto-generated biweekly narrative</div>
+      <div class="tf"><div class="tf-dot td-green"></div>Win rate by platform and category</div>
+      <div class="tf"><div class="tf-dot td-green"></div>Growing learnings library over time</div>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-num sn-green" id="totalDecisions">0</div><div class="stat-label">Decisions logged</div></div>
+      <div class="stat"><div class="stat-num sn-green" id="winRate">—</div><div class="stat-label">Win rate</div></div>
+      <div class="stat"><div class="stat-num sn-green" id="last14">0</div><div class="stat-label">Last 14 days</div></div>
+    </div>
+    <a class="tool-btn tb-green" href="./marketing-decision-journal.html" target="_blank">Open Marketing Journal →</a>
+  </div>
+
+  <!-- TOOL 3 — AD COPY STUDIO -->
+  <div class="tool-card tc-amber">
+    <div class="tool-top">
+      <div class="tool-icon ti-amber">✍️</div>
+      <span class="tool-new-badge">NEW</span>
+    </div>
+    <div>
+      <h2>Ad Copy Studio</h2>
+      <p>Write ad copy for every format across LinkedIn, Meta, and Google — with live character counters, goal labels, and AI suggestions.</p>
+    </div>
+    <div class="tool-features">
+      <div class="tf"><div class="tf-dot td-amber"></div>All ad types across LinkedIn, Meta & Google</div>
+      <div class="tf"><div class="tf-dot td-amber"></div>Eligible campaign goals shown per ad type</div>
+      <div class="tf"><div class="tf-dot td-amber"></div>Live character counter — green / amber / red</div>
+      <div class="tf"><div class="tf-dot td-amber"></div>AI suggest button per ad type</div>
+      <div class="tf"><div class="tf-dot td-amber"></div>Saves all copy to history automatically</div>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-num sn-amber">25+</div><div class="stat-label">Ad types</div></div>
+      <div class="stat"><div class="stat-num sn-amber">3</div><div class="stat-label">Platforms</div></div>
+      <div class="stat"><div class="stat-num sn-amber" id="adHistory">0</div><div class="stat-label">Copies saved</div></div>
+    </div>
+    <a class="tool-btn tb-amber" href="./ad-copy-tool.html" target="_blank">Open Ad Copy Studio →</a>
+  </div>
+
+  <!-- TOOL 4 — UTM BUILDER -->
+  <div class="tool-card tc-purple">
+    <div class="tool-top">
+      <div class="tool-icon ti-purple">🔗</div>
+      <span class="tool-new-badge">NEW</span>
+    </div>
+    <div>
+      <h2>UTM Builder</h2>
+      <p>Build clean, consistent UTM links with preset values, custom parameters, naming convention rules, and a full history log.</p>
+    </div>
+    <div class="tool-features">
+      <div class="tf"><div class="tf-dot td-purple"></div>Preset values for all major platforms</div>
+      <div class="tf"><div class="tf-dot td-purple"></div>Add unlimited custom parameters</div>
+      <div class="tf"><div class="tf-dot td-purple"></div>URL health check — catches common mistakes</div>
+      <div class="tf"><div class="tf-dot td-purple"></div>Saves all links with load-back feature</div>
+      <div class="tf"><div class="tf-dot td-purple"></div>Naming convention guide built in</div>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-num sn-purple" id="utmHistory">0</div><div class="stat-label">Links saved</div></div>
+      <div class="stat"><div class="stat-num sn-purple">6+</div><div class="stat-label">UTM params</div></div>
+      <div class="stat"><div class="stat-num sn-purple">∞</div><div class="stat-label">Custom params</div></div>
+    </div>
+    <a class="tool-btn tb-purple" href="./utm-builder.html" target="_blank">Open UTM Builder →</a>
+  </div>
+
+</div>
+
+<footer>
+  Built by <strong>Ajith Anbazhagan</strong> · Senior Digital Marketing Specialist · AI-enabled marketer
+</footer>
+
+<script>
+try {
+  const decisions = JSON.parse(localStorage.getItem('mdj_v2') || '[]');
+  const pos = decisions.filter(d => d.outcome === 'Positive').length;
+  const neg = decisions.filter(d => d.outcome === 'Negative').length;
+  const wr = pos + neg > 0 ? Math.round((pos / (pos + neg)) * 100) + '%' : '—';
+  const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 14);
+  const last14 = decisions.filter(d => new Date(d.date) >= cutoff).length;
+  document.getElementById('totalDecisions').textContent = decisions.length;
+  document.getElementById('winRate').textContent = wr;
+  document.getElementById('last14').textContent = last14;
+} catch(e) {}
+
+try {
+  const adH = JSON.parse(localStorage.getItem('adcopy_history') || '[]');
+  document.getElementById('adHistory').textContent = adH.length;
+} catch(e) {}
+
+try {
+  const utmH = JSON.parse(localStorage.getItem('utm_history') || '[]');
+  document.getElementById('utmHistory').textContent = utmH.length;
+} catch(e) {}
+</script>
+</body>
+</html>

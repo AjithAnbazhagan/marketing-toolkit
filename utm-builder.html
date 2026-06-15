@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>UTM Builder</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#f5f7ff;--surface:#fff;--border:#e2e6f3;
+  --accent:#1450F5;--accent-light:#e8edff;--accent-hover:#0e3fd4;
+  --green:#0d9f6e;--green-bg:#e6f7f2;
+  --amber:#d97706;--amber-bg:#fef3e2;
+  --red:#dc2626;--red-bg:#fef2f2;
+  --text:#0f172a;--text2:#334155;--muted:#64748b;--muted2:#94a3b8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;min-height:100vh;}
+
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(20,80,245,.06);}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;}
+.logo-text{font-size:15px;font-weight:700;letter-spacing:-.4px;}
+.logo-text span{color:var(--accent);}
+.back-btn{background:var(--accent-light);border:none;border-radius:8px;color:var(--accent);cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:7px 14px;text-decoration:none;display:flex;align-items:center;gap:5px;}
+
+.app{display:grid;grid-template-columns:380px 1fr;height:calc(100vh - 58px);}
+
+/* LEFT */
+.left{background:var(--surface);border-right:1px solid var(--border);padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;}
+.section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted2);margin-bottom:8px;}
+
+.ff{display:flex;flex-direction:column;gap:5px;}
+.ff label{font-size:11px;font-weight:600;color:var(--text2);display:flex;align-items:center;gap:6px;}
+.required{color:var(--red);font-size:10px;}
+.optional-tag{background:var(--bg);border:1px solid var(--border);border-radius:4px;font-size:9px;font-weight:500;color:var(--muted2);padding:1px 5px;}
+
+.field-wrap{position:relative;}
+.field-wrap input,.field-wrap select{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;padding:9px 36px 9px 12px;width:100%;outline:none;transition:border-color .2s;}
+.field-wrap input:focus,.field-wrap select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(20,80,245,.08);}
+.field-wrap input::placeholder{color:var(--muted2);}
+.field-wrap input.valid{border-color:var(--green);}
+.field-wrap input.invalid{border-color:var(--red);}
+.field-icon{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;}
+
+.field-hint{font-size:10px;color:var(--muted2);margin-top:3px;}
+.naming-rule{font-size:10px;color:var(--amber);margin-top:3px;display:flex;align-items:center;gap:4px;}
+
+/* PRESETS */
+.preset-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px;}
+.preset-btn{background:var(--bg);border:1.5px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;padding:4px 10px;transition:all .2s;white-space:nowrap;}
+.preset-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
+
+/* CUSTOM PARAMS */
+.custom-params{display:flex;flex-direction:column;gap:8px;}
+.custom-param-row{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:center;}
+.custom-param-row input{background:var(--bg);border:1.5px solid var(--border);border-radius:7px;color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:7px 10px;width:100%;outline:none;}
+.custom-param-row input:focus{border-color:var(--accent);}
+.del-param{background:none;border:1px solid #fecaca;border-radius:6px;color:var(--red);cursor:pointer;font-size:14px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.del-param:hover{background:var(--red);color:#fff;}
+.add-param-btn{background:var(--accent-light);border:1.5px dashed var(--accent);border-radius:8px;color:var(--accent);cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;padding:8px;width:100%;transition:all .2s;}
+.add-param-btn:hover{background:var(--accent);color:#fff;}
+
+.divider{height:1px;background:var(--border);}
+
+.build-btn{background:var(--accent);border:none;border-radius:10px;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;padding:13px;width:100%;box-shadow:0 4px 14px rgba(20,80,245,.3);transition:background .2s;}
+.build-btn:hover{background:var(--accent-hover);}
+
+/* RIGHT */
+.right{display:flex;flex-direction:column;overflow:hidden;}
+.tabs{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;}
+.tab{padding:14px 18px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1px;transition:color .2s;white-space:nowrap;}
+.tab:hover{color:var(--text2);}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+.output{flex:1;overflow-y:auto;padding:24px;}
+
+/* URL OUTPUT */
+.url-output-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:20px;}
+.url-output-header{background:var(--bg);padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.url-output-label{font-size:12px;font-weight:600;color:var(--text2);}
+.url-copy-btn{background:var(--accent);border:none;border-radius:6px;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;padding:5px 14px;transition:background .2s;}
+.url-copy-btn:hover{background:var(--accent-hover);}
+.url-copy-btn.copied{background:var(--green);}
+.url-body{padding:16px 18px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.8;color:var(--text);word-break:break-all;}
+.url-base{color:var(--muted);}
+.url-param{display:inline;}
+.param-key{color:var(--accent);font-weight:500;}
+.param-val{color:var(--green);}
+.param-amp{color:var(--muted2);}
+
+/* BREAKDOWN */
+.breakdown-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.breakdown-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;}
+.bk-key{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:4px;}
+.bk-val{font-size:13px;font-weight:600;color:var(--text);font-family:'JetBrains Mono',monospace;}
+.bk-empty{color:var(--muted2);font-weight:400;font-family:'Inter',sans-serif;font-size:12px;}
+
+/* HISTORY */
+.history-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;}
+.history-url{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2);word-break:break-all;line-height:1.6;margin-bottom:8px;}
+.history-meta{font-size:11px;color:var(--muted);margin-bottom:8px;}
+.history-actions{display:flex;gap:6px;}
+.hbtn{background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;padding:3px 10px;transition:all .2s;}
+.hbtn:hover{border-color:var(--accent);color:var(--accent);}
+.hbtn-del{border-color:#fecaca;color:var(--red);}
+.hbtn-del:hover{background:var(--red);color:#fff;border-color:var(--red);}
+
+/* NAMING GUIDE */
+.guide-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px;}
+.guide-card h4{font-size:12px;font-weight:600;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.guide-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.guide-row:last-child{border-bottom:none;}
+.guide-label{color:var(--muted);font-weight:500;}
+.guide-val{font-family:'JetBrains Mono',monospace;color:var(--accent);font-size:11px;}
+
+.empty-state{text-align:center;padding:52px 20px;}
+.empty-icon{font-size:36px;margin-bottom:10px;opacity:.3;}
+.empty-state h3{font-size:14px;font-weight:600;color:var(--text);margin-bottom:5px;opacity:.4;}
+.empty-state p{font-size:12px;color:var(--muted);line-height:1.6;max-width:280px;margin:0 auto;}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;font-size:13px;font-weight:500;padding:11px 18px;border-radius:10px;z-index:999;transform:translateY(60px);opacity:0;transition:all .3s;}
+.toast.show{transform:translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🔗</div>
+    <div class="logo-text">UTM <span>Builder</span></div>
+  </div>
+  <a class="back-btn" href="./hub.html">← Back to Hub</a>
+</header>
+
+<div class="app">
+  <!-- LEFT -->
+  <div class="left">
+
+    <div>
+      <div class="section-label">Base URL</div>
+      <div class="ff">
+        <label>Website URL <span class="required">required</span></label>
+        <div class="field-wrap">
+          <input type="text" id="baseUrl" placeholder="https://yourwebsite.com/page" oninput="validateUrl()" />
+          <span class="field-icon" id="urlIcon"></span>
+        </div>
+        <div class="field-hint">Include https:// — the full landing page URL</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div>
+      <div class="section-label">Standard UTM Parameters</div>
+
+      <div class="ff">
+        <label>utm_source <span class="required">required</span></label>
+        <div class="preset-row">
+          <button class="preset-btn" onclick="setField('source','google')">google</button>
+          <button class="preset-btn" onclick="setField('source','linkedin')">linkedin</button>
+          <button class="preset-btn" onclick="setField('source','facebook')">facebook</button>
+          <button class="preset-btn" onclick="setField('source','instagram')">instagram</button>
+          <button class="preset-btn" onclick="setField('source','newsletter')">newsletter</button>
+          <button class="preset-btn" onclick="setField('source','partner')">partner</button>
+        </div>
+        <div class="field-wrap">
+          <input type="text" id="source" placeholder="e.g. google, linkedin, newsletter" oninput="sanitize(this);buildUrl()"/>
+        </div>
+        <div class="naming-rule">⚠ Use lowercase, no spaces — use hyphens instead</div>
+      </div>
+
+      <div class="ff">
+        <label>utm_medium <span class="required">required</span></label>
+        <div class="preset-row">
+          <button class="preset-btn" onclick="setField('medium','cpc')">cpc</button>
+          <button class="preset-btn" onclick="setField('medium','paid-social')">paid-social</button>
+          <button class="preset-btn" onclick="setField('medium','email')">email</button>
+          <button class="preset-btn" onclick="setField('medium','organic')">organic</button>
+          <button class="preset-btn" onclick="setField('medium','display')">display</button>
+          <button class="preset-btn" onclick="setField('medium','referral')">referral</button>
+        </div>
+        <div class="field-wrap">
+          <input type="text" id="medium" placeholder="e.g. cpc, email, paid-social" oninput="sanitize(this);buildUrl()"/>
+        </div>
+        <div class="naming-rule">⚠ Standardise this — pick one and stick to it</div>
+      </div>
+
+      <div class="ff">
+        <label>utm_campaign <span class="required">required</span></label>
+        <div class="preset-row">
+          <button class="preset-btn" onclick="setField('campaign','brand-awareness-q2-2026')">brand-awareness-q2</button>
+          <button class="preset-btn" onclick="setField('campaign','lead-gen-uk')">lead-gen-uk</button>
+          <button class="preset-btn" onclick="setField('campaign','retargeting-us')">retargeting-us</button>
+          <button class="preset-btn" onclick="setField('campaign','product-launch')">product-launch</button>
+        </div>
+        <div class="field-wrap">
+          <input type="text" id="campaign" placeholder="e.g. lead-gen-uk-q2-2026" oninput="sanitize(this);buildUrl()"/>
+        </div>
+        <div class="field-hint">Include: objective + market + quarter e.g. lead-gen-uk-q2-2026</div>
+      </div>
+
+      <div class="ff">
+        <label>utm_content <span class="optional-tag">optional</span></label>
+        <div class="preset-row">
+          <button class="preset-btn" onclick="setField('content','single-image')">single-image</button>
+          <button class="preset-btn" onclick="setField('content','carousel')">carousel</button>
+          <button class="preset-btn" onclick="setField('content','video')">video</button>
+          <button class="preset-btn" onclick="setField('content','text-ad')">text-ad</button>
+          <button class="preset-btn" onclick="setField('content','story')">story</button>
+        </div>
+        <div class="field-wrap">
+          <input type="text" id="content" placeholder="e.g. carousel-ad, single-image, video" oninput="sanitize(this);buildUrl()"/>
+        </div>
+        <div class="field-hint">Differentiate ad format or creative type</div>
+      </div>
+
+      <div class="ff">
+        <label>utm_term <span class="optional-tag">optional</span></label>
+        <div class="field-wrap">
+          <input type="text" id="term" placeholder="e.g. biztalk-monitoring, enterprise-software" oninput="sanitize(this);buildUrl()"/>
+        </div>
+        <div class="field-hint">For paid search — the keyword being targeted</div>
+      </div>
+
+      <div class="ff">
+        <label>utm_id <span class="optional-tag">optional</span></label>
+        <div class="field-wrap">
+          <input type="text" id="utmid" placeholder="e.g. camp_001, 2026-q2-uk" oninput="sanitize(this);buildUrl()"/>
+        </div>
+        <div class="field-hint">Campaign ID for cross-platform tracking</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div>
+      <div class="section-label">Custom Parameters <span style="font-size:10px;font-weight:400;color:var(--muted)">— add your own</span></div>
+      <div class="custom-params" id="customParams"></div>
+      <button class="add-param-btn" onclick="addCustomParam()">+ Add Custom Parameter</button>
+      <div class="field-hint" style="margin-top:6px;">Examples: utm_agency, utm_region, utm_audience, utm_ab_variant</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <button class="build-btn" onclick="buildAndSave()">🔗 Build & Save UTM Link</button>
+
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('builder')" id="tab-builder">🔗 Generated URL</div>
+      <div class="tab" onclick="switchTab('history')" id="tab-history">🕐 Saved Links</div>
+      <div class="tab" onclick="switchTab('guide')" id="tab-guide">📋 Naming Guide</div>
+    </div>
+    <div class="output" id="output">
+      <div class="empty-state">
+        <div class="empty-icon">🔗</div>
+        <h3>Fill in the fields and build your UTM link</h3>
+        <p>Your complete UTM URL will appear here with a breakdown of each parameter.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let utmHistory = JSON.parse(localStorage.getItem('utm_history') || '[]');
+let customParams = [];
+let currentTab = 'builder';
+let currentUrl = '';
+
+function showToast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (tab === 'history') renderHistory();
+  else if (tab === 'guide') renderGuide();
+  else renderBuilder();
+}
+
+function setField(id, val) {
+  document.getElementById(id).value = val;
+  buildUrl();
+}
+
+function sanitize(el) {
+  el.value = el.value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-_.]/g, '');
+}
+
+function validateUrl() {
+  const val = document.getElementById('baseUrl').value.trim();
+  const icon = document.getElementById('urlIcon');
+  if (!val) { icon.textContent = ''; return; }
+  if (val.startsWith('http://') || val.startsWith('https://')) {
+    icon.textContent = '✓';
+    icon.style.color = 'var(--green)';
+  } else {
+    icon.textContent = '✗';
+    icon.style.color = 'var(--red)';
+  }
+  buildUrl();
+}
+
+function addCustomParam() {
+  const id = 'custom_' + Date.now();
+  customParams.push({ id, key: '', value: '' });
+  renderCustomParams();
+}
+
+function removeCustomParam(id) {
+  customParams = customParams.filter(p => p.id !== id);
+  renderCustomParams();
+  buildUrl();
+}
+
+function renderCustomParams() {
+  const el = document.getElementById('customParams');
+  el.innerHTML = customParams.map(p => `
+    <div class="custom-param-row">
+      <input type="text" placeholder="param name e.g. utm_agency" value="${p.key}"
+        oninput="updateCustom('${p.id}','key',this.value.toLowerCase().replace(/\\s+/g,'-'));buildUrl()" />
+      <input type="text" placeholder="value" value="${p.value}"
+        oninput="updateCustom('${p.id}','value',this.value.toLowerCase().replace(/\\s+/g,'-'));buildUrl()" />
+      <button class="del-param" onclick="removeCustomParam('${p.id}')">×</button>
+    </div>`).join('');
+}
+
+function updateCustom(id, field, val) {
+  const p = customParams.find(x => x.id === id);
+  if (p) p[field] = val;
+}
+
+function buildUrl() {
+  const base = document.getElementById('baseUrl').value.trim();
+  const source = document.getElementById('source').value.trim();
+  const medium = document.getElementById('medium').value.trim();
+  const campaign = document.getElementById('campaign').value.trim();
+  const content = document.getElementById('content').value.trim();
+  const term = document.getElementById('term').value.trim();
+  const utmid = document.getElementById('utmid').value.trim();
+
+  if (!base || !source || !medium || !campaign) { currentUrl = ''; return; }
+
+  const params = [];
+  if (source) params.push(['utm_source', source]);
+  if (medium) params.push(['utm_medium', medium]);
+  if (campaign) params.push(['utm_campaign', campaign]);
+  if (content) params.push(['utm_content', content]);
+  if (term) params.push(['utm_term', term]);
+  if (utmid) params.push(['utm_id', utmid]);
+  customParams.forEach(p => { if (p.key && p.value) params.push([p.key, p.value]); });
+
+  const separator = base.includes('?') ? '&' : '?';
+  currentUrl = base + separator + params.map(([k,v]) => `${k}=${encodeURIComponent(v)}`).join('&');
+
+  if (currentTab === 'builder') renderBuilder();
+}
+
+function renderBuilder() {
+  if (!currentUrl) {
+    document.getElementById('output').innerHTML = `<div class="empty-state"><div class="empty-icon">🔗</div><h3>Fill in the required fields</h3><p>URL, Source, Medium and Campaign are required to build your UTM link.</p></div>`;
+    return;
+  }
+
+  const base = document.getElementById('baseUrl').value.trim();
+  const source = document.getElementById('source').value.trim();
+  const medium = document.getElementById('medium').value.trim();
+  const campaign = document.getElementById('campaign').value.trim();
+  const content = document.getElementById('content').value.trim();
+  const term = document.getElementById('term').value.trim();
+  const utmid = document.getElementById('utmid').value.trim();
+
+  const paramMap = [
+    { key: 'utm_source', val: source },
+    { key: 'utm_medium', val: medium },
+    { key: 'utm_campaign', val: campaign },
+    { key: 'utm_content', val: content },
+    { key: 'utm_term', val: term },
+    { key: 'utm_id', val: utmid },
+    ...customParams.filter(p => p.key && p.value).map(p => ({ key: p.key, val: p.value }))
+  ].filter(p => p.val);
+
+  const separator = base.includes('?') ? '&' : '?';
+  let highlighted = `<span class="url-base">${base}</span>${separator}`;
+  highlighted += paramMap.map((p,i) =>
+    `${i>0?'<span class="param-amp">&amp;</span>':''}<span class="param-key">${p.key}</span>=<span class="param-val">${encodeURIComponent(p.val)}</span>`
+  ).join('');
+
+  document.getElementById('output').innerHTML = `
+    <div class="url-output-card">
+      <div class="url-output-header">
+        <span class="url-output-label">🔗 Your UTM URL</span>
+        <button class="url-copy-btn" id="mainCopyBtn" onclick="copyUrl()">Copy URL</button>
+      </div>
+      <div class="url-body">${highlighted}</div>
+    </div>
+
+    <div class="breakdown-grid">
+      ${paramMap.map(p => `
+        <div class="breakdown-card">
+          <div class="bk-key">${p.key}</div>
+          <div class="bk-val">${p.val || '<span class="bk-empty">not set</span>'}</div>
+        </div>`).join('')}
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;">
+      <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;">URL Health Check</div>
+      ${[
+        ['Has https://', base.startsWith('https://'), base.startsWith('https://')? 'Secure URL ✓' : 'Use https:// not http://'],
+        ['No spaces in params', !currentUrl.includes(' '), 'All parameters are space-free ✓'],
+        ['Lowercase values', currentUrl === currentUrl.toLowerCase(), 'All values are lowercase ✓'],
+        ['All required params set', !!(source && medium && campaign), 'Source, medium and campaign all set ✓'],
+      ].map(([label, pass, msg]) => `
+        <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;">
+          <span style="color:${pass?'var(--green)':'var(--red)'};">${pass?'✓':'✗'}</span>
+          <span style="color:${pass?'var(--text2)':'var(--red)'};">${msg}</span>
+        </div>`).join('')}
+    </div>`;
+}
+
+function copyUrl() {
+  if (!currentUrl) return;
+  navigator.clipboard.writeText(currentUrl).then(() => {
+    const btn = document.getElementById('mainCopyBtn');
+    if (btn) { btn.textContent = '✓ Copied!'; btn.classList.add('copied'); setTimeout(() => { btn.textContent = 'Copy URL'; btn.classList.remove('copied'); }, 2000); }
+    showToast('URL copied ✓');
+  });
+}
+
+function buildAndSave() {
+  buildUrl();
+  if (!currentUrl) { alert('Please fill in URL, Source, Medium and Campaign first.'); return; }
+  const entry = {
+    id: Date.now(),
+    url: currentUrl,
+    source: document.getElementById('source').value,
+    medium: document.getElementById('medium').value,
+    campaign: document.getElementById('campaign').value,
+    time: new Date().toLocaleString()
+  };
+  utmHistory.unshift(entry);
+  if (utmHistory.length > 100) utmHistory = utmHistory.slice(0, 100);
+  localStorage.setItem('utm_history', JSON.stringify(utmHistory));
+  navigator.clipboard.writeText(currentUrl).then(() => showToast('Built, saved & copied ✓'));
+  if (currentTab === 'builder') renderBuilder();
+}
+
+function renderHistory() {
+  const el = document.getElementById('output');
+  if (!utmHistory.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">🕐</div><h3>No links saved yet</h3><p>Click "Build & Save UTM Link" to save links here.</p></div>`;
+    return;
+  }
+  el.innerHTML = utmHistory.map(h => `
+    <div class="history-item">
+      <div class="history-meta">${h.source} / ${h.medium} / ${h.campaign} · ${h.time}</div>
+      <div class="history-url">${h.url}</div>
+      <div class="history-actions">
+        <button class="hbtn" onclick="navigator.clipboard.writeText('${h.url.replace(/'/g,"\\'")}').then(()=>showToast('Copied ✓'))">Copy</button>
+        <button class="hbtn" onclick="loadFromHistory(${h.id})">Load</button>
+        <button class="hbtn hbtn-del" onclick="deleteHistory(${h.id})">Delete</button>
+      </div>
+    </div>`).join('');
+}
+
+function loadFromHistory(id) {
+  const h = utmHistory.find(x => x.id === id);
+  if (!h) return;
+  try {
+    const url = new URL(h.url);
+    document.getElementById('baseUrl').value = url.origin + url.pathname;
+    const params = new URLSearchParams(url.search);
+    ['source','medium','campaign','content','term'].forEach(k => {
+      const el = document.getElementById(k);
+      if (el) el.value = params.get('utm_' + k) || '';
+    });
+    document.getElementById('utmid').value = params.get('utm_id') || '';
+    buildUrl();
+    switchTab('builder');
+    showToast('Loaded ✓');
+  } catch(e) { showToast('Could not load this URL'); }
+}
+
+function deleteHistory(id) {
+  utmHistory = utmHistory.filter(h => h.id !== id);
+  localStorage.setItem('utm_history', JSON.stringify(utmHistory));
+  renderHistory();
+  showToast('Deleted');
+}
+
+function renderGuide() {
+  document.getElementById('output').innerHTML = `
+    <div class="guide-card">
+      <h4>📌 UTM Naming Conventions</h4>
+      <div class="guide-row"><span class="guide-label">Always lowercase</span><span class="guide-val">linkedin not LinkedIn</span></div>
+      <div class="guide-row"><span class="guide-label">Use hyphens not spaces</span><span class="guide-val">lead-gen not lead gen</span></div>
+      <div class="guide-row"><span class="guide-label">Be consistent across team</span><span class="guide-val">Always use same source names</span></div>
+      <div class="guide-row"><span class="guide-label">Include date in campaign</span><span class="guide-val">lead-gen-uk-q2-2026</span></div>
+      <div class="guide-row"><span class="guide-label">Never use in organic posts</span><span class="guide-val">UTM is for paid/tracked links only</span></div>
+    </div>
+    <div class="guide-card">
+      <h4>🔵 LinkedIn Ads Examples</h4>
+      <div class="guide-row"><span class="guide-label">utm_source</span><span class="guide-val">linkedin</span></div>
+      <div class="guide-row"><span class="guide-label">utm_medium</span><span class="guide-val">paid-social</span></div>
+      <div class="guide-row"><span class="guide-label">utm_campaign</span><span class="guide-val">lead-gen-uk-q2-2026</span></div>
+      <div class="guide-row"><span class="guide-label">utm_content</span><span class="guide-val">single-image-ad</span></div>
+    </div>
+    <div class="guide-card">
+      <h4>📘 Meta Ads Examples</h4>
+      <div class="guide-row"><span class="guide-label">utm_source</span><span class="guide-val">facebook</span></div>
+      <div class="guide-row"><span class="guide-label">utm_medium</span><span class="guide-val">paid-social</span></div>
+      <div class="guide-row"><span class="guide-label">utm_campaign</span><span class="guide-val">awareness-us-q2-2026</span></div>
+      <div class="guide-row"><span class="guide-label">utm_content</span><span class="guide-val">carousel-ad</span></div>
+    </div>
+    <div class="guide-card">
+      <h4>🟡 Google Ads Examples</h4>
+      <div class="guide-row"><span class="guide-label">utm_source</span><span class="guide-val">google</span></div>
+      <div class="guide-row"><span class="guide-label">utm_medium</span><span class="guide-val">cpc</span></div>
+      <div class="guide-row"><span class="guide-label">utm_campaign</span><span class="guide-val">brand-keywords-uk-2026</span></div>
+      <div class="guide-row"><span class="guide-label">utm_term</span><span class="guide-val">biztalk-monitoring-tool</span></div>
+    </div>
+    <div class="guide-card">
+      <h4>✉️ Email Marketing Examples</h4>
+      <div class="guide-row"><span class="guide-label">utm_source</span><span class="guide-val">newsletter</span></div>
+      <div class="guide-row"><span class="guide-label">utm_medium</span><span class="guide-val">email</span></div>
+      <div class="guide-row"><span class="guide-label">utm_campaign</span><span class="guide-val">nurture-seq-1-june-2026</span></div>
+      <div class="guide-row"><span class="guide-label">utm_content</span><span class="guide-val">cta-button-hero</span></div>
+    </div>`;
+}
+
+// Auto build on load if fields filled
+buildUrl();
+</script>
+</body>
+</html>
