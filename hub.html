@@ -8,78 +8,75 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 :root{
   --bg:#f5f7ff;--surface:#fff;--border:#e2e6f3;
-  --accent:#1450F5;--accent-light:#e8edff;--accent-hover:#0e3fd4;
+  --accent:#1450F5;--accent-light:#e8edff;
   --green:#0d9f6e;--green-bg:#e6f7f2;
   --amber:#d97706;--amber-bg:#fef3e2;
+  --red:#dc2626;
   --purple:#7c3aed;--purple-bg:#f5f3ff;
+  --meta:#1877f2;--meta-bg:#e8f0fe;
+  --teal:#0891b2;--teal-bg:#e0f7fa;
   --text:#0f172a;--text2:#334155;--muted:#64748b;--muted2:#94a3b8;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
 
-header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 40px;height:62px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 3px rgba(20,80,245,.06);}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 40px;height:62px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 3px rgba(20,80,245,.06);position:sticky;top:0;z-index:100;}
 .logo{display:flex;align-items:center;gap:10px;}
 .logo-icon{width:34px;height:34px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;}
 .logo-text{font-size:15px;font-weight:700;letter-spacing:-.4px;}
 .logo-text span{color:var(--accent);}
-.header-badge{background:var(--accent-light);color:var(--accent);font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;}
+.header-right{display:flex;align-items:center;gap:10px;}
+.tool-count{background:var(--accent-light);color:var(--accent);font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;}
 
-.hero{text-align:center;padding:56px 40px 40px;}
-.hero-tag{display:inline-flex;align-items:center;gap:6px;background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;margin-bottom:18px;}
-.hero h1{font-size:38px;font-weight:800;letter-spacing:-1px;color:var(--text);margin-bottom:12px;line-height:1.15;}
+/* HERO */
+.hero{text-align:center;padding:48px 40px 36px;}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;margin-bottom:16px;}
+.hero h1{font-size:34px;font-weight:800;letter-spacing:-1px;color:var(--text);margin-bottom:10px;line-height:1.2;}
 .hero h1 span{color:var(--accent);}
-.hero p{font-size:15px;color:var(--muted);max-width:460px;margin:0 auto;line-height:1.7;}
+.hero p{font-size:14px;color:var(--muted);max-width:460px;margin:0 auto;line-height:1.7;}
 
-/* TOOLS GRID — 2x2 */
-.tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:960px;margin:0 auto;padding:0 40px 60px;}
+/* ── TOOL GRID — icons only at top ── */
+.tools-icon-grid{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;padding:0 40px 40px;}
 
-.tool-card{background:var(--surface);border:1.5px solid var(--border);border-radius:18px;padding:28px;display:flex;flex-direction:column;gap:16px;transition:border-color .2s,box-shadow .2s;position:relative;overflow:hidden;}
-.tool-card:hover{border-color:var(--accent);box-shadow:0 8px 32px rgba(20,80,245,.09);}
-.tool-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity .2s;}
-.tool-card:hover::after{opacity:1;}
-.tc-blue::after{background:var(--accent);}
-.tc-green::after{background:var(--green);}
-.tc-amber::after{background:var(--amber);}
-.tc-purple::after{background:var(--purple);}
+.tool-icon-card{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:20px 16px;display:flex;flex-direction:column;align-items:center;gap:10px;width:130px;cursor:pointer;transition:all .2s;text-decoration:none;position:relative;}
+.tool-icon-card:hover{border-color:var(--accent);box-shadow:0 8px 24px rgba(20,80,245,.1);transform:translateY(-2px);}
+.tool-icon-card.active{border-color:var(--accent);box-shadow:0 8px 24px rgba(20,80,245,.12);}
+.tic-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;}
+.tic-name{font-size:11px;font-weight:700;color:var(--text);text-align:center;line-height:1.3;}
+.tic-new{position:absolute;top:-6px;right:-6px;background:var(--amber);color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:10px;}
+.tic-open{font-size:10px;color:var(--accent);font-weight:600;display:flex;align-items:center;gap:3px;}
 
-.tool-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
-.tool-icon{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
-.ti-blue{background:var(--accent-light);}
-.ti-green{background:var(--green-bg);}
-.ti-amber{background:var(--amber-bg);}
-.ti-purple{background:var(--purple-bg);}
-.tool-new-badge{background:var(--amber-bg);color:var(--amber);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;white-space:nowrap;}
+/* ── DETAIL SECTION ── */
+.detail-section{max-width:960px;margin:0 auto;padding:0 40px 60px;}
+.detail-divider{height:1px;background:var(--border);margin-bottom:32px;}
 
-.tool-card h2{font-size:18px;font-weight:700;letter-spacing:-.3px;color:var(--text);}
-.tool-card p{font-size:12px;color:var(--muted);line-height:1.65;}
+.tool-detail-card{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:28px;margin-bottom:16px;display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:start;transition:border-color .2s;}
+.tool-detail-card:hover{border-color:var(--accent);}
+.tdc-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.tdc-body h3{font-size:16px;font-weight:700;margin-bottom:6px;letter-spacing:-.3px;}
+.tdc-body p{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:12px;}
+.tdc-features{display:flex;flex-wrap:wrap;gap:6px;}
+.tdc-feat{font-size:11px;font-weight:500;color:var(--text2);background:var(--bg);border:1px solid var(--border);padding:3px 10px;border-radius:20px;}
+.tdc-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex-shrink:0;}
+.open-btn{display:flex;align-items:center;gap:6px;border:none;border-radius:10px;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;padding:11px 20px;text-decoration:none;transition:all .2s;white-space:nowrap;}
+.ob-blue{background:var(--accent);box-shadow:0 3px 10px rgba(20,80,245,.25);}
+.ob-blue:hover{background:#0e3fd4;}
+.ob-green{background:var(--green);box-shadow:0 3px 10px rgba(13,159,110,.25);}
+.ob-green:hover{background:#0a8560;}
+.ob-amber{background:var(--amber);box-shadow:0 3px 10px rgba(217,119,6,.25);}
+.ob-amber:hover{background:#b45309;}
+.ob-purple{background:var(--purple);box-shadow:0 3px 10px rgba(124,58,237,.25);}
+.ob-purple:hover{background:#6d28d9;}
+.ob-meta{background:var(--meta);box-shadow:0 3px 10px rgba(24,119,242,.25);}
+.ob-meta:hover{background:#1461d4;}
+.ob-teal{background:var(--teal);box-shadow:0 3px 10px rgba(8,145,178,.25);}
+.ob-teal:hover{background:#0670a0;}
+.stat-pill{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 12px;text-align:center;}
+.sp-val{font-size:16px;font-weight:800;color:var(--accent);}
+.sp-label{font-size:10px;color:var(--muted);margin-top:1px;}
+.new-badge{background:var(--amber-bg);color:var(--amber);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;}
 
-.tool-features{display:flex;flex-direction:column;gap:6px;}
-.tf{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text2);}
-.tf-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
-.td-blue{background:var(--accent);}
-.td-green{background:var(--green);}
-.td-amber{background:var(--amber);}
-.td-purple{background:var(--purple);}
-
-.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;}
-.stat{text-align:center;}
-.stat-num{font-size:17px;font-weight:700;}
-.sn-blue{color:var(--accent);}
-.sn-green{color:var(--green);}
-.sn-amber{color:var(--amber);}
-.sn-purple{color:var(--purple);}
-.stat-label{font-size:10px;color:var(--muted);margin-top:1px;font-weight:500;}
-
-.tool-btn{display:flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:10px;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;padding:12px;text-decoration:none;transition:all .2s;margin-top:auto;box-shadow:0 3px 10px rgba(0,0,0,.1);}
-.tb-blue{background:var(--accent);box-shadow:0 4px 14px rgba(20,80,245,.25);}
-.tb-blue:hover{background:var(--accent-hover);}
-.tb-green{background:var(--green);box-shadow:0 4px 14px rgba(13,159,110,.25);}
-.tb-green:hover{background:#0a8560;}
-.tb-amber{background:var(--amber);box-shadow:0 4px 14px rgba(217,119,6,.25);}
-.tb-amber:hover{background:#b45309;}
-.tb-purple{background:var(--purple);box-shadow:0 4px 14px rgba(124,58,237,.25);}
-.tb-purple:hover{background:#6d28d9;}
-
+/* FOOTER */
 footer{text-align:center;padding:24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted2);}
 footer strong{color:var(--accent);}
 </style>
@@ -91,113 +88,161 @@ footer strong{color:var(--accent);}
     <div class="logo-icon">🚀</div>
     <div class="logo-text">Ajith's <span>Marketing Toolkit</span></div>
   </div>
-  <div class="header-badge">4 Tools · 100% Free</div>
+  <div class="header-right">
+    <div class="tool-count">5 Tools · 100% Free</div>
+  </div>
 </header>
 
+<!-- HERO -->
 <div class="hero">
-  <div class="hero-tag">⚡ AI-Powered Marketing Tools</div>
+  <div class="hero-tag">⚡ AI-Powered · Free · No subscription</div>
   <h1>Your personal<br/><span>marketing command centre</span></h1>
-  <p>Four tools built to save time, document your work, write better ads, and track every campaign link — all in one place.</p>
+  <p>Five tools built for performance marketers — content, ads, tracking, analysis, and auditing. All free, all in one place.</p>
 </div>
 
-<div class="tools-grid">
+<!-- TOOL ICONS ROW -->
+<div class="tools-icon-grid">
 
-  <!-- TOOL 1 — REPURPOSE AGENT -->
-  <div class="tool-card tc-blue">
-    <div class="tool-top">
-      <div class="tool-icon ti-blue">⚡</div>
+  <a class="tool-icon-card" href="./index.html" target="_blank">
+    <div class="tic-icon" style="background:var(--accent-light);">⚡</div>
+    <div class="tic-name">Repurpose Agent</div>
+    <div class="tic-open">Open →</div>
+  </a>
+
+  <a class="tool-icon-card" href="./marketing-decision-journal.html" target="_blank">
+    <div class="tic-icon" style="background:var(--green-bg);">📓</div>
+    <div class="tic-name">Decision Journal</div>
+    <div class="tic-open">Open →</div>
+  </a>
+
+  <a class="tool-icon-card" href="./ad-copy-tool.html" target="_blank">
+    <div class="tic-icon" style="background:var(--amber-bg);">✍️</div>
+    <div class="tic-name">Ad Copy Studio</div>
+    <div class="tic-open">Open →</div>
+  </a>
+
+  <a class="tool-icon-card" href="./utm-builder.html" target="_blank">
+    <div class="tic-icon" style="background:var(--purple-bg);">🔗</div>
+    <div class="tic-name">UTM Builder</div>
+    <div class="tic-open">Open →</div>
+  </a>
+
+  <a class="tool-icon-card" href="./marketing-audit-suite.html" target="_blank">
+    <div class="tic-icon" style="background:var(--teal-bg);">🔬</div>
+    <div class="tic-name">Audit Suite</div>
+    <span class="tic-new">NEW</span>
+    <div class="tic-open">Open →</div>
+  </a>
+
+</div>
+
+<!-- DETAIL SECTION -->
+<div class="detail-section">
+  <div class="detail-divider"></div>
+
+  <!-- 1 -->
+  <div class="tool-detail-card">
+    <div class="tdc-icon" style="background:var(--accent-light);">⚡</div>
+    <div class="tdc-body">
+      <h3>Repurpose Agent</h3>
+      <p>Paste any blog URL and generate 8 platform-ready content formats across LinkedIn and Meta — in under 2 minutes. No API key, no cost, works free via Claude.</p>
+      <div class="tdc-features">
+        <span class="tdc-feat">5 LinkedIn formats</span>
+        <span class="tdc-feat">3 Meta formats</span>
+        <span class="tdc-feat">Character counts</span>
+        <span class="tdc-feat">Image specs</span>
+        <span class="tdc-feat">Best performer pick</span>
+        <span class="tdc-feat">No API needed</span>
+      </div>
     </div>
-    <div>
-      <h2>Repurpose Agent</h2>
-      <p>Paste any blog URL and instantly generate platform-ready content for LinkedIn and Meta — no manual writing needed.</p>
+    <div class="tdc-right">
+      <div class="stat-pill"><div class="sp-val">8</div><div class="sp-label">Formats</div></div>
+      <a class="open-btn ob-blue" href="./index.html" target="_blank">Open →</a>
     </div>
-    <div class="tool-features">
-      <div class="tf"><div class="tf-dot td-blue"></div>Fetches full page content automatically</div>
-      <div class="tf"><div class="tf-dot td-blue"></div>5 LinkedIn formats + 3 Meta formats</div>
-      <div class="tf"><div class="tf-dot td-blue"></div>Character counts + image specs included</div>
-      <div class="tf"><div class="tf-dot td-blue"></div>Best performer prediction included</div>
-      <div class="tf"><div class="tf-dot td-blue"></div>No API key needed — works free via Claude</div>
-    </div>
-    <div class="stats-row">
-      <div class="stat"><div class="stat-num sn-blue">8</div><div class="stat-label">Content formats</div></div>
-      <div class="stat"><div class="stat-num sn-blue">~2min</div><div class="stat-label">Per repurpose</div></div>
-      <div class="stat"><div class="stat-num sn-blue">$0</div><div class="stat-label">Cost</div></div>
-    </div>
-    <a class="tool-btn tb-blue" href="./index.html" target="_blank">Open Repurpose Agent →</a>
   </div>
 
-  <!-- TOOL 2 — MARKETING JOURNAL -->
-  <div class="tool-card tc-green">
-    <div class="tool-top">
-      <div class="tool-icon ti-green">📓</div>
+  <!-- 2 -->
+  <div class="tool-detail-card">
+    <div class="tdc-icon" style="background:var(--green-bg);">📓</div>
+    <div class="tdc-body">
+      <h3>Marketing Decision Journal</h3>
+      <p>Log every significant campaign decision across Google, LinkedIn, and Meta. Track outcomes, see win rates by platform and category, and auto-generate biweekly reports ready to present to stakeholders.</p>
+      <div class="tdc-features">
+        <span class="tdc-feat">Decision log</span>
+        <span class="tdc-feat">Outcome tracking</span>
+        <span class="tdc-feat">Win rate by platform</span>
+        <span class="tdc-feat">Biweekly auto-report</span>
+        <span class="tdc-feat">Learnings library</span>
+        <span class="tdc-feat">Export / Import</span>
+      </div>
     </div>
-    <div>
-      <h2>Marketing Decision Journal</h2>
-      <p>Log every significant campaign decision, track outcomes, and auto-generate biweekly reports for your stakeholder calls.</p>
+    <div class="tdc-right">
+      <div class="stat-pill"><div class="sp-val" id="journalStat">0</div><div class="sp-label">Decisions</div></div>
+      <a class="open-btn ob-green" href="./marketing-decision-journal.html" target="_blank">Open →</a>
     </div>
-    <div class="tool-features">
-      <div class="tf"><div class="tf-dot td-green"></div>Log decisions across Google, LinkedIn and Meta</div>
-      <div class="tf"><div class="tf-dot td-green"></div>Update outcomes with one click per entry</div>
-      <div class="tf"><div class="tf-dot td-green"></div>Auto-generated biweekly narrative</div>
-      <div class="tf"><div class="tf-dot td-green"></div>Win rate by platform and category</div>
-      <div class="tf"><div class="tf-dot td-green"></div>Growing learnings library over time</div>
-    </div>
-    <div class="stats-row">
-      <div class="stat"><div class="stat-num sn-green" id="totalDecisions">0</div><div class="stat-label">Decisions logged</div></div>
-      <div class="stat"><div class="stat-num sn-green" id="winRate">—</div><div class="stat-label">Win rate</div></div>
-      <div class="stat"><div class="stat-num sn-green" id="last14">0</div><div class="stat-label">Last 14 days</div></div>
-    </div>
-    <a class="tool-btn tb-green" href="./marketing-decision-journal.html" target="_blank">Open Marketing Journal →</a>
   </div>
 
-  <!-- TOOL 3 — AD COPY STUDIO -->
-  <div class="tool-card tc-amber">
-    <div class="tool-top">
-      <div class="tool-icon ti-amber">✍️</div>
-      <span class="tool-new-badge">NEW</span>
+  <!-- 3 -->
+  <div class="tool-detail-card">
+    <div class="tdc-icon" style="background:var(--amber-bg);">✍️</div>
+    <div class="tdc-body">
+      <h3>Ad Copy Studio</h3>
+      <p>Write ad copy for every format across LinkedIn, Meta, and Google — 25+ ad types with live character counters, goal labels, visual ad previews, and multiple version support for AB testing.</p>
+      <div class="tdc-features">
+        <span class="tdc-feat">25+ ad types</span>
+        <span class="tdc-feat">Live preview</span>
+        <span class="tdc-feat">Character counter</span>
+        <span class="tdc-feat">Multiple versions</span>
+        <span class="tdc-feat">AI suggest</span>
+        <span class="tdc-feat">Export PDF</span>
+      </div>
     </div>
-    <div>
-      <h2>Ad Copy Studio</h2>
-      <p>Write ad copy for every format across LinkedIn, Meta, and Google — with live character counters, goal labels, and AI suggestions.</p>
+    <div class="tdc-right">
+      <div class="stat-pill"><div class="sp-val">3</div><div class="sp-label">Platforms</div></div>
+      <a class="open-btn ob-amber" href="./ad-copy-tool.html" target="_blank">Open →</a>
     </div>
-    <div class="tool-features">
-      <div class="tf"><div class="tf-dot td-amber"></div>All ad types across LinkedIn, Meta & Google</div>
-      <div class="tf"><div class="tf-dot td-amber"></div>Eligible campaign goals shown per ad type</div>
-      <div class="tf"><div class="tf-dot td-amber"></div>Live character counter — green / amber / red</div>
-      <div class="tf"><div class="tf-dot td-amber"></div>AI suggest button per ad type</div>
-      <div class="tf"><div class="tf-dot td-amber"></div>Saves all copy to history automatically</div>
-    </div>
-    <div class="stats-row">
-      <div class="stat"><div class="stat-num sn-amber">25+</div><div class="stat-label">Ad types</div></div>
-      <div class="stat"><div class="stat-num sn-amber">3</div><div class="stat-label">Platforms</div></div>
-      <div class="stat"><div class="stat-num sn-amber" id="adHistory">0</div><div class="stat-label">Copies saved</div></div>
-    </div>
-    <a class="tool-btn tb-amber" href="./ad-copy-tool.html" target="_blank">Open Ad Copy Studio →</a>
   </div>
 
-  <!-- TOOL 4 — UTM BUILDER -->
-  <div class="tool-card tc-purple">
-    <div class="tool-top">
-      <div class="tool-icon ti-purple">🔗</div>
-      <span class="tool-new-badge">NEW</span>
+  <!-- 4 -->
+  <div class="tool-detail-card">
+    <div class="tdc-icon" style="background:var(--purple-bg);">🔗</div>
+    <div class="tdc-body">
+      <h3>UTM Builder</h3>
+      <p>Build clean, consistent UTM tracking links with preset values for all major platforms, unlimited custom parameters, URL health checks, and a full history log with load-back in one click.</p>
+      <div class="tdc-features">
+        <span class="tdc-feat">6 UTM params</span>
+        <span class="tdc-feat">Custom params</span>
+        <span class="tdc-feat">Preset values</span>
+        <span class="tdc-feat">URL health check</span>
+        <span class="tdc-feat">Naming guide</span>
+        <span class="tdc-feat">Link history</span>
+      </div>
     </div>
-    <div>
-      <h2>UTM Builder</h2>
-      <p>Build clean, consistent UTM links with preset values, custom parameters, naming convention rules, and a full history log.</p>
+    <div class="tdc-right">
+      <div class="stat-pill"><div class="sp-val" id="utmStat">0</div><div class="sp-label">Links saved</div></div>
+      <a class="open-btn ob-purple" href="./utm-builder.html" target="_blank">Open →</a>
     </div>
-    <div class="tool-features">
-      <div class="tf"><div class="tf-dot td-purple"></div>Preset values for all major platforms</div>
-      <div class="tf"><div class="tf-dot td-purple"></div>Add unlimited custom parameters</div>
-      <div class="tf"><div class="tf-dot td-purple"></div>URL health check — catches common mistakes</div>
-      <div class="tf"><div class="tf-dot td-purple"></div>Saves all links with load-back feature</div>
-      <div class="tf"><div class="tf-dot td-purple"></div>Naming convention guide built in</div>
+  </div>
+
+  <!-- 5 -->
+  <div class="tool-detail-card">
+    <div class="tdc-icon" style="background:var(--teal-bg);">🔬</div>
+    <div class="tdc-body">
+      <h3>Marketing Audit Suite <span class="new-badge">NEW</span></h3>
+      <p>Three audit tools in one — CRO Checklist scores your landing page across 8 categories with a priority fix list, Attribution Health Checker diagnoses your tracking gaps with an exact fix plan, and Wasted Spend Calculator shows how much budget you are losing and where.</p>
+      <div class="tdc-features">
+        <span class="tdc-feat">CRO checklist</span>
+        <span class="tdc-feat">Attribution diagnosis</span>
+        <span class="tdc-feat">Wasted spend calc</span>
+        <span class="tdc-feat">UTM script included</span>
+        <span class="tdc-feat">HubSpot workflow map</span>
+        <span class="tdc-feat">No data upload</span>
+      </div>
     </div>
-    <div class="stats-row">
-      <div class="stat"><div class="stat-num sn-purple" id="utmHistory">0</div><div class="stat-label">Links saved</div></div>
-      <div class="stat"><div class="stat-num sn-purple">6+</div><div class="stat-label">UTM params</div></div>
-      <div class="stat"><div class="stat-num sn-purple">∞</div><div class="stat-label">Custom params</div></div>
+    <div class="tdc-right">
+      <div class="stat-pill"><div class="sp-val">3</div><div class="sp-label">Audits</div></div>
+      <a class="open-btn ob-teal" href="./marketing-audit-suite.html" target="_blank">Open →</a>
     </div>
-    <a class="tool-btn tb-purple" href="./utm-builder.html" target="_blank">Open UTM Builder →</a>
   </div>
 
 </div>
@@ -207,27 +252,14 @@ footer strong{color:var(--accent);}
 </footer>
 
 <script>
-try {
-  const decisions = JSON.parse(localStorage.getItem('mdj_v2') || '[]');
-  const pos = decisions.filter(d => d.outcome === 'Positive').length;
-  const neg = decisions.filter(d => d.outcome === 'Negative').length;
-  const wr = pos + neg > 0 ? Math.round((pos / (pos + neg)) * 100) + '%' : '—';
-  const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 14);
-  const last14 = decisions.filter(d => new Date(d.date) >= cutoff).length;
-  document.getElementById('totalDecisions').textContent = decisions.length;
-  document.getElementById('winRate').textContent = wr;
-  document.getElementById('last14').textContent = last14;
-} catch(e) {}
-
-try {
-  const adH = JSON.parse(localStorage.getItem('adcopy_history') || '[]');
-  document.getElementById('adHistory').textContent = adH.length;
-} catch(e) {}
-
-try {
-  const utmH = JSON.parse(localStorage.getItem('utm_history') || '[]');
-  document.getElementById('utmHistory').textContent = utmH.length;
-} catch(e) {}
+try{
+  const d=JSON.parse(localStorage.getItem('mdj_v2')||'[]');
+  document.getElementById('journalStat').textContent=d.length;
+}catch(e){}
+try{
+  const u=JSON.parse(localStorage.getItem('utm_history')||'[]');
+  document.getElementById('utmStat').textContent=u.length;
+}catch(e){}
 </script>
 </body>
 </html>
