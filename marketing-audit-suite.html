@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Marketing Audit Suite</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+:root{
+  --bg:#f5f7ff;--surface:#fff;--border:#e2e6f3;
+  --accent:#1450F5;--accent-light:#e8edff;--accent-hover:#0e3fd4;
+  --green:#0d9f6e;--green-bg:#e6f7f2;
+  --amber:#d97706;--amber-bg:#fef3e2;
+  --red:#dc2626;--red-bg:#fef2f2;
+  --purple:#7c3aed;--purple-bg:#f5f3ff;
+  --text:#0f172a;--text2:#334155;--muted:#64748b;--muted2:#94a3b8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;min-height:100vh;}
+
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(20,80,245,.06);}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;}
+.logo-text{font-size:15px;font-weight:700;letter-spacing:-.4px;}
+.logo-text span{color:var(--accent);}
+.back-btn{background:var(--accent-light);border:none;border-radius:8px;color:var(--accent);cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:7px 14px;text-decoration:none;}
+
+/* TABS */
+.main-tabs{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;display:flex;gap:0;}
+.mtab{padding:15px 22px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1px;transition:color .2s;white-space:nowrap;display:flex;align-items:center;gap:7px;}
+.mtab:hover{color:var(--text2);}
+.mtab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+.content{max-width:900px;margin:0 auto;padding:28px;}
+
+/* INTRO CARD */
+.intro-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:24px;display:flex;gap:20px;align-items:flex-start;}
+.intro-icon{font-size:32px;flex-shrink:0;}
+.intro-title{font-size:16px;font-weight:700;margin-bottom:6px;}
+.intro-desc{font-size:13px;color:var(--muted);line-height:1.7;}
+
+/* SCORE CIRCLE */
+.score-section{display:flex;gap:20px;margin-bottom:24px;align-items:stretch;}
+.score-circle-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:160px;gap:8px;}
+.score-circle{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;border:6px solid var(--border);transition:all .3s;}
+.score-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;}
+.score-verdict{font-size:12px;font-weight:700;text-align:center;}
+
+.score-breakdown{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;}
+.score-breakdown h4{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;}
+.cat-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);}
+.cat-row:last-child{border-bottom:none;}
+.cat-name{font-size:12px;font-weight:500;color:var(--text2);width:160px;flex-shrink:0;}
+.cat-bar-wrap{flex:1;height:7px;background:var(--border);border-radius:4px;overflow:hidden;}
+.cat-bar{height:100%;border-radius:4px;transition:width .5s;}
+.cat-score{font-size:11px;font-weight:700;width:40px;text-align:right;flex-shrink:0;}
+
+/* CHECKLIST */
+.checklist-section{margin-bottom:24px;}
+.checklist-cat{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:12px;}
+.cat-header{padding:12px 18px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+.cat-header-left{display:flex;align-items:center;gap:10px;}
+.cat-header-icon{font-size:18px;}
+.cat-header-title{font-size:13px;font-weight:700;color:var(--text);}
+.cat-header-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+.cat-progress{font-size:11px;font-weight:600;color:var(--accent);}
+.checklist-items{padding:4px 0;}
+.check-item{display:flex;align-items:flex-start;gap:14px;padding:12px 18px;border-bottom:1px solid var(--border);transition:background .15s;}
+.check-item:last-child{border-bottom:none;}
+.check-item:hover{background:var(--bg);}
+.check-toggle{display:flex;gap:6px;flex-shrink:0;margin-top:1px;}
+.check-btn{width:28px;height:28px;border-radius:6px;border:1.5px solid var(--border);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s;background:var(--surface);}
+.check-btn:hover{transform:scale(1.05);}
+.check-btn.yes{background:var(--green);border-color:var(--green);color:#fff;}
+.check-btn.no{background:var(--red);border-color:var(--red);color:#fff;}
+.check-content{flex:1;}
+.check-q{font-size:13px;font-weight:500;color:var(--text);line-height:1.4;}
+.check-hint{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5;}
+.check-impact{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;display:inline-block;margin-top:4px;}
+.ci-high{background:var(--red-bg);color:var(--red);}
+.ci-med{background:var(--amber-bg);color:var(--amber);}
+.ci-low{background:var(--accent-light);color:var(--accent);}
+
+/* PRIORITY LIST */
+.priority-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:24px;}
+.priority-header{padding:14px 18px;border-bottom:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:space-between;}
+.priority-title{font-size:13px;font-weight:700;}
+.priority-item{display:flex;gap:14px;align-items:flex-start;padding:14px 18px;border-bottom:1px solid var(--border);}
+.priority-item:last-child{border-bottom:none;}
+.pri-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;margin-top:1px;}
+.pri-1{background:var(--red);}
+.pri-2{background:var(--amber);}
+.pri-3{background:var(--accent);}
+.pri-body h4{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.pri-body p{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* FORM INPUTS */
+.form-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.form-section h3{font-size:13px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.ff{display:flex;flex-direction:column;gap:5px;}
+.ff.full{grid-column:1/-1;}
+.ff label{font-size:11px;font-weight:600;color:var(--text2);}
+.ff input,.ff select{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;padding:9px 12px;width:100%;outline:none;transition:border-color .2s;}
+.ff input:focus,.ff select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(20,80,245,.08);}
+.ff input::placeholder{color:var(--muted2);}
+.ff-hint{font-size:10px;color:var(--muted2);margin-top:2px;}
+
+/* RADIO GROUP */
+.radio-group{display:flex;gap:8px;flex-wrap:wrap;}
+.radio-opt{display:flex;align-items:center;gap:6px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:7px 12px;cursor:pointer;transition:all .2s;font-size:12px;font-weight:500;}
+.radio-opt:hover{border-color:var(--accent);}
+.radio-opt.selected{background:var(--accent-light);border-color:var(--accent);color:var(--accent);}
+.radio-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .2s;}
+.radio-opt.selected .radio-dot{background:var(--accent);}
+
+/* RESULT CARDS */
+.result-card{border-radius:10px;padding:16px;margin-bottom:10px;display:flex;gap:14px;}
+.rc-crit{background:var(--red-bg);border:1px solid #fecaca;}
+.rc-warn{background:var(--amber-bg);border:1px solid #fde68a;}
+.rc-ok{background:var(--green-bg);border:1px solid #a7f3d0;}
+.rc-info{background:var(--accent-light);border:1px solid #bfdbfe;}
+.rc-icon{font-size:22px;flex-shrink:0;}
+.rc-body h4{font-size:13px;font-weight:700;margin-bottom:4px;}
+.rc-body p{font-size:12px;color:var(--text2);line-height:1.6;}
+.rc-action{font-size:11px;font-weight:600;margin-top:6px;padding:4px 10px;border-radius:5px;display:inline-block;color:#fff;}
+.rca-red{background:var(--red);}
+.rca-amber{background:var(--amber);}
+.rca-green{background:var(--green);}
+.rca-blue{background:var(--accent);}
+
+/* CALC RESULTS */
+.calc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
+.calc-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;}
+.calc-value{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px;}
+.calc-label{font-size:11px;color:var(--muted);font-weight:500;}
+
+/* ATTRIBUTION SETUP */
+.setup-item{display:flex;gap:14px;align-items:flex-start;padding:14px 18px;border-bottom:1px solid var(--border);}
+.setup-item:last-child{border-bottom:none;}
+.setup-status{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:1px;}
+.ss-ok{background:var(--green-bg);color:var(--green);}
+.ss-bad{background:var(--red-bg);color:var(--red);}
+.ss-warn{background:var(--amber-bg);color:var(--amber);}
+.setup-body h4{font-size:13px;font-weight:600;margin-bottom:3px;}
+.setup-body p{font-size:12px;color:var(--muted);line-height:1.5;}
+.setup-fix{font-size:11px;font-weight:600;color:var(--accent);margin-top:4px;}
+
+/* BUTTONS */
+.run-btn{background:var(--accent);border:none;border-radius:10px;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;padding:13px 28px;box-shadow:0 4px 14px rgba(20,80,245,.3);transition:background .2s;}
+.run-btn:hover{background:var(--accent-hover);}
+.sec-btn{background:var(--surface);border:1.5px solid var(--border);border-radius:8px;color:var(--text2);cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:7px 14px;transition:all .2s;}
+.sec-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* CODE BLOCK */
+.code-block{background:#0f172a;border-radius:8px;padding:16px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#e2e8f0;line-height:1.7;overflow-x:auto;margin:10px 0;position:relative;}
+.code-copy{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.1);border:none;border-radius:4px;color:#e2e8f0;cursor:pointer;font-family:'Inter',sans-serif;font-size:10px;padding:4px 8px;}
+.code-copy:hover{background:rgba(255,255,255,.2);}
+
+.divider{height:1px;background:var(--border);margin:20px 0;}
+.section-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:7px;}
+.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;}
+.b-red{background:var(--red-bg);color:var(--red);}
+.b-amber{background:var(--amber-bg);color:var(--amber);}
+.b-green{background:var(--green-bg);color:var(--green);}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;font-size:13px;font-weight:500;padding:11px 18px;border-radius:10px;z-index:999;transform:translateY(60px);opacity:0;transition:all .3s;}
+.toast.show{transform:translateY(0);opacity:1;}
+.hidden{display:none!important;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🔬</div>
+    <div class="logo-text">Marketing <span>Audit Suite</span></div>
+  </div>
+  <a class="back-btn" href="./hub.html">← Back to Hub</a>
+</header>
+
+<div class="main-tabs">
+  <div class="mtab active" onclick="switchTab('cro')" id="mtab-cro">🎯 CRO Checklist</div>
+  <div class="mtab" onclick="switchTab('attribution')" id="mtab-attribution">🔗 Attribution Health</div>
+  <div class="mtab" onclick="switchTab('waste')" id="mtab-waste">💸 Wasted Spend</div>
+</div>
+
+<!-- ══════════ TAB 1: CRO ══════════ -->
+<div id="tab-cro" class="content">
+  <div class="intro-card">
+    <div class="intro-icon">🎯</div>
+    <div>
+      <div class="intro-title">Landing Page CRO Audit</div>
+      <div class="intro-desc">Go through your landing page and answer each question honestly. The tool scores your page across 8 conversion categories and gives you a prioritised fix list. No data upload — just your observations.</div>
+    </div>
+  </div>
+
+  <!-- SCORE -->
+  <div class="score-section" id="croScoreSection">
+    <div class="score-circle-wrap">
+      <div class="score-circle" id="croCircle" style="border-color:var(--border);color:var(--muted2);">—</div>
+      <div class="score-label">CRO Score</div>
+      <div class="score-verdict" id="croVerdict" style="color:var(--muted2);">Answer questions below</div>
+    </div>
+    <div class="score-breakdown">
+      <h4>Score by Category</h4>
+      <div id="croCatBreakdown">
+        <div style="font-size:12px;color:var(--muted2);padding:20px 0;">Complete the checklist to see category scores</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKLIST -->
+  <div class="checklist-section" id="croChecklist"></div>
+
+  <!-- PRIORITY FIXES -->
+  <div id="croPrioritySection" class="hidden">
+    <div class="priority-section">
+      <div class="priority-header">
+        <span class="priority-title">🔥 Priority Fix List</span>
+        <button class="sec-btn" onclick="exportCROReport()">Export Report</button>
+      </div>
+      <div id="croPriorityList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ TAB 2: ATTRIBUTION ══════════ -->
+<div id="tab-attribution" class="content hidden">
+  <div class="intro-card">
+    <div class="intro-icon">🔗</div>
+    <div>
+      <div class="intro-title">Attribution Health Checker</div>
+      <div class="intro-desc">Answer questions about your current tracking setup. The tool diagnoses your attribution gaps based on proven B2B attribution best practices and gives you an exact fix plan — including the UTM persistence script and HubSpot workflow mapping.</div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3>📊 Current Setup</h3>
+    <div style="display:flex;flex-direction:column;gap:16px;">
+
+      <div class="ff">
+        <label>What % of your leads land as "Direct Traffic" in your CRM?</label>
+        <div class="radio-group" id="directPct">
+          <div class="radio-opt selected" onclick="selectRadio('directPct',this,'0-10')"><div class="radio-dot"></div>Under 10%</div>
+          <div class="radio-opt" onclick="selectRadio('directPct',this,'10-30')"><div class="radio-dot"></div>10–30%</div>
+          <div class="radio-opt" onclick="selectRadio('directPct',this,'30-50')"><div class="radio-dot"></div>30–50%</div>
+          <div class="radio-opt" onclick="selectRadio('directPct',this,'50+')"><div class="radio-dot"></div>Over 50%</div>
+        </div>
+        <div class="ff-hint">Higher = more attribution is broken. Industry average is 30–40% Direct for B2B.</div>
+      </div>
+
+      <div class="ff">
+        <label>Do your UTM parameters persist across multiple pages on your website?</label>
+        <div class="radio-group" id="utmPersist">
+          <div class="radio-opt selected" onclick="selectRadio('utmPersist',this,'yes')"><div class="radio-dot"></div>Yes — UTMs carry across pages</div>
+          <div class="radio-opt" onclick="selectRadio('utmPersist',this,'no')"><div class="radio-dot"></div>No — they drop after page 1</div>
+          <div class="radio-opt" onclick="selectRadio('utmPersist',this,'unknown')"><div class="radio-dot"></div>Not sure</div>
+        </div>
+      </div>
+
+      <div class="ff">
+        <label>Do your lead capture forms have hidden UTM fields?</label>
+        <div class="radio-group" id="hiddenFields">
+          <div class="radio-opt selected" onclick="selectRadio('hiddenFields',this,'yes-all')"><div class="radio-dot"></div>Yes — all forms</div>
+          <div class="radio-opt" onclick="selectRadio('hiddenFields',this,'yes-some')"><div class="radio-dot"></div>Some forms only</div>
+          <div class="radio-opt" onclick="selectRadio('hiddenFields',this,'no')"><div class="radio-dot"></div>No</div>
+          <div class="radio-opt" onclick="selectRadio('hiddenFields',this,'unknown')"><div class="radio-dot"></div>Not sure</div>
+        </div>
+      </div>
+
+      <div class="ff">
+        <label>Do you use a workflow to translate raw UTMs into clean channel reporting?</label>
+        <div class="radio-group" id="workflow">
+          <div class="radio-opt selected" onclick="selectRadio('workflow',this,'yes')"><div class="radio-dot"></div>Yes</div>
+          <div class="radio-opt" onclick="selectRadio('workflow',this,'no')"><div class="radio-dot"></div>No</div>
+          <div class="radio-opt" onclick="selectRadio('workflow',this,'unknown')"><div class="radio-dot"></div>Not sure</div>
+        </div>
+      </div>
+
+      <div class="ff">
+        <label>Do all your campaigns use consistent UTM naming conventions?</label>
+        <div class="radio-group" id="utmNaming">
+          <div class="radio-opt selected" onclick="selectRadio('utmNaming',this,'yes')"><div class="radio-dot"></div>Yes — documented convention</div>
+          <div class="radio-opt" onclick="selectRadio('utmNaming',this,'partial')"><div class="radio-dot"></div>Partially — some campaigns</div>
+          <div class="radio-opt" onclick="selectRadio('utmNaming',this,'no')"><div class="radio-dot"></div>No — ad hoc</div>
+        </div>
+      </div>
+
+      <div class="ff">
+        <label>Which CRM / Marketing platform are you using?</label>
+        <div class="radio-group" id="crm">
+          <div class="radio-opt selected" onclick="selectRadio('crm',this,'hubspot')"><div class="radio-dot"></div>HubSpot</div>
+          <div class="radio-opt" onclick="selectRadio('crm',this,'salesforce')"><div class="radio-dot"></div>Salesforce</div>
+          <div class="radio-opt" onclick="selectRadio('crm',this,'other')"><div class="radio-dot"></div>Other CRM</div>
+          <div class="radio-opt" onclick="selectRadio('crm',this,'none')"><div class="radio-dot"></div>No CRM</div>
+        </div>
+      </div>
+
+      <div class="ff">
+        <label>Do any forms have hard-coded default values in the Lead Source field?</label>
+        <div class="radio-group" id="hardcoded">
+          <div class="radio-opt selected" onclick="selectRadio('hardcoded',this,'no')"><div class="radio-dot"></div>No</div>
+          <div class="radio-opt" onclick="selectRadio('hardcoded',this,'yes')"><div class="radio-dot"></div>Yes</div>
+          <div class="radio-opt" onclick="selectRadio('hardcoded',this,'unknown')"><div class="radio-dot"></div>Not sure</div>
+        </div>
+      </div>
+
+    </div>
+    <div style="margin-top:20px;">
+      <button class="run-btn" onclick="runAttribution()">🔍 Diagnose My Attribution</button>
+    </div>
+  </div>
+
+  <div id="attributionResults" class="hidden"></div>
+</div>
+
+<!-- ══════════ TAB 3: WASTED SPEND ══════════ -->
+<div id="tab-waste" class="content hidden">
+  <div class="intro-card">
+    <div class="intro-icon">💸</div>
+    <div>
+      <div class="intro-title">Wasted Ad Spend Calculator</div>
+      <div class="intro-desc">Enter your campaign numbers and the tool calculates how much budget is being wasted — on untracked traffic, high-frequency audiences, poor-quality clicks, and unoptimised landing pages. No CSV upload needed.</div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3>📥 Campaign Inputs</h3>
+    <div class="form-grid">
+      <div class="ff">
+        <label>Total Monthly Ad Spend ($)</label>
+        <input type="number" id="wTotalSpend" placeholder="e.g. 10000" oninput="calcWaste()"/>
+      </div>
+      <div class="ff">
+        <label>Total Leads Generated</label>
+        <input type="number" id="wLeads" placeholder="e.g. 40" oninput="calcWaste()"/>
+      </div>
+      <div class="ff">
+        <label>% of Leads with No Attribution (Direct Traffic %)</label>
+        <input type="number" id="wDirectPct" placeholder="e.g. 40" min="0" max="100" oninput="calcWaste()"/>
+        <div class="ff-hint">Find this in your CRM source report. B2B average is 30–40%.</div>
+      </div>
+      <div class="ff">
+        <label>Average Landing Page Bounce Rate (%)</label>
+        <input type="number" id="wBounce" placeholder="e.g. 65" min="0" max="100" oninput="calcWaste()"/>
+        <div class="ff-hint">Find this in Google Analytics. B2B average is 60–70%.</div>
+      </div>
+      <div class="ff">
+        <label>Average Ad Frequency (times seen per person)</label>
+        <input type="number" id="wFreq" placeholder="e.g. 4.5" step="0.1" oninput="calcWaste()"/>
+        <div class="ff-hint">From Meta or LinkedIn dashboard. Ideal is 2–4x.</div>
+      </div>
+      <div class="ff">
+        <label>% of Budget on Campaigns with Zero Conversions</label>
+        <input type="number" id="wZeroConv" placeholder="e.g. 20" min="0" max="100" oninput="calcWaste()"/>
+        <div class="ff-hint">Estimate based on your campaign performance.</div>
+      </div>
+      <div class="ff">
+        <label>Average Deal Size ($)</label>
+        <input type="number" id="wDealSize" placeholder="e.g. 25000" oninput="calcWaste()"/>
+      </div>
+      <div class="ff">
+        <label>Lead to Customer Rate (%)</label>
+        <input type="number" id="wCloseRate" placeholder="e.g. 10" min="0" max="100" oninput="calcWaste()"/>
+      </div>
+    </div>
+  </div>
+
+  <div id="wasteResults" class="hidden">
+    <div class="calc-grid" id="wasteCards"></div>
+    <div id="wasteInsights"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── SHARED ──
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
+function switchTab(tab){
+  ['cro','attribution','waste'].forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('hidden',t!==tab);
+    document.getElementById('mtab-'+t).classList.toggle('active',t===tab);
+  });
+}
+function selectRadio(groupId,el,val){
+  document.querySelectorAll('#'+groupId+' .radio-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  el.dataset.val=val;
+}
+function getRadio(groupId){
+  const sel=document.querySelector('#'+groupId+' .radio-opt.selected');
+  return sel?sel.dataset.val||sel.textContent.trim():'';
+}
+
+// ── CRO CHECKLIST ──
+const CRO_CATS = [
+  { id:'headline', icon:'📝', name:'Headline & Value Prop', items:[
+    {q:'Is the headline immediately clear about what the page offers?',hint:'A visitor should understand the offer within 3 seconds of landing.',impact:'high'},
+    {q:'Does the headline focus on a customer benefit — not a product feature?',hint:'e.g. "Cut BizTalk monitoring time by 80%" vs "Advanced monitoring platform"',impact:'high'},
+    {q:'Is there a clear sub-headline that supports the main headline?',hint:'Sub-headline should answer "how" or "for whom".',impact:'med'},
+    {q:'Is the headline visible above the fold without scrolling?',hint:'On both desktop and mobile.',impact:'high'},
+  ]},
+  { id:'cta', icon:'🎯', name:'Call to Action', items:[
+    {q:'Is there a clear, single primary CTA on the page?',hint:'Multiple competing CTAs reduce conversion. One page, one goal.',impact:'high'},
+    {q:'Is the CTA button specific — not generic like "Submit" or "Click Here"?',hint:'e.g. "Book Your Free Demo" or "Download the Guide" outperforms "Submit".',impact:'high'},
+    {q:'Is the CTA visible without scrolling on desktop?',hint:'Above the fold CTA is critical for high-intent traffic.',impact:'high'},
+    {q:'Does the CTA appear more than once on longer pages?',hint:'Repeat CTA every screen-length on pages over 800px.',impact:'med'},
+    {q:'Is the CTA button colour contrasting from the background?',hint:'High contrast buttons get 2–3x more clicks.',impact:'med'},
+  ]},
+  { id:'form', icon:'📋', name:'Form & Friction', items:[
+    {q:'Does the form ask for the minimum fields required?',hint:'Every extra field reduces submissions. B2B optimal is 3–5 fields.',impact:'high'},
+    {q:'Is the form above the fold or immediately visible?',hint:'Forms below the fold lose 20–40% of potential submissions.',impact:'high'},
+    {q:'Is there a privacy note near the form?',hint:'"We never share your data" near the submit button increases trust.',impact:'med'},
+    {q:'Does the form have a strong value statement above it?',hint:'Tell them what they get for submitting.',impact:'med'},
+    {q:'Is the submit button on the form — not a link to another page?',hint:'Extra clicks kill conversion.',impact:'high'},
+  ]},
+  { id:'trust', icon:'🛡', name:'Trust & Credibility', items:[
+    {q:'Are customer logos or brand names visible on the page?',hint:'Logo bars increase trust by up to 72% in B2B.',impact:'high'},
+    {q:'Are there testimonials or case study quotes on the page?',hint:'Specific, named testimonials outperform generic ones.',impact:'high'},
+    {q:'Is there a trust badge, certification, or award visible?',hint:'G2, Capterra, ISO, or industry awards.',impact:'med'},
+    {q:'Are company stats or proof points shown?',hint:'e.g. "Trusted by 500+ enterprises" or "4.8/5 on G2".',impact:'med'},
+  ]},
+  { id:'mobile', icon:'📱', name:'Mobile Experience', items:[
+    {q:'Does the page load in under 3 seconds on mobile?',hint:'53% of users abandon pages that take over 3 seconds to load.',impact:'high'},
+    {q:'Is the CTA button large enough to tap on mobile?',hint:'Minimum 44px height for touch targets.',impact:'high'},
+    {q:'Is the form easy to fill on a mobile keyboard?',hint:'Use appropriate input types — email, tel, number.',impact:'med'},
+    {q:'Is text readable without zooming on mobile?',hint:'Minimum 16px font size for body text.',impact:'med'},
+  ]},
+  { id:'messaging', icon:'💬', name:'Messaging & Copy', items:[
+    {q:'Does the page copy focus on the customer — not the company?',hint:'Count "you/your" vs "we/our". Customer-focused copy converts better.',impact:'high'},
+    {q:'Is the unique differentiator clearly stated?',hint:'Why you over a competitor should be clear within 10 seconds.',impact:'high'},
+    {q:'Is the copy free of jargon that your audience would not use?',hint:'Write in the language your customer uses, not internal language.',impact:'med'},
+    {q:'Is there a clear explanation of what happens after conversion?',hint:'"You will receive a confirmation email and our team will call within 24 hours."',impact:'med'},
+  ]},
+  { id:'urgency', icon:'⏰', name:'Urgency & Relevance', items:[
+    {q:'Is there a reason to act now — not later?',hint:'Limited offer, deadline, or scarcity element.',impact:'med'},
+    {q:'Is the page message consistent with the ad that brought the visitor?',hint:'Message match between ad and landing page is critical for quality score and conversion.',impact:'high'},
+    {q:'Is the offer relevant to the traffic source?',hint:'Paid traffic needs a different offer than organic search traffic.',impact:'med'},
+  ]},
+  { id:'analytics', icon:'📊', name:'Tracking & Analytics', items:[
+    {q:'Is a thank-you page or confirmation page set up after form submission?',hint:'Needed to track conversions in Google Analytics and ad platforms.',impact:'high'},
+    {q:'Is Google Analytics or equivalent tracking installed and firing?',hint:'Check in GA4 real-time report.',impact:'high'},
+    {q:'Are UTM parameters passing through to the CRM from this page?',hint:'Use the Attribution Health Checker tab to verify.',impact:'high'},
+    {q:'Is the conversion event set up in Google Ads / Meta / LinkedIn?',hint:'Without a conversion event your campaigns cannot optimise toward leads.',impact:'high'},
+  ]},
+];
+
+let croAnswers = {};
+
+function initCRO(){
+  const el=document.getElementById('croChecklist');
+  el.innerHTML=CRO_CATS.map(cat=>`
+    <div class="checklist-cat">
+      <div class="cat-header" onclick="toggleCat('${cat.id}')">
+        <div class="cat-header-left">
+          <div class="cat-header-icon">${cat.icon}</div>
+          <div><div class="cat-header-title">${cat.name}</div><div class="cat-header-sub">${cat.items.length} questions</div></div>
+        </div>
+        <span class="cat-progress" id="catprog-${cat.id}">0/${cat.items.length}</span>
+      </div>
+      <div class="checklist-items" id="catitems-${cat.id}">
+        ${cat.items.map((item,i)=>`
+          <div class="check-item" id="ci-${cat.id}-${i}">
+            <div class="check-toggle">
+              <div class="check-btn" id="yes-${cat.id}-${i}" onclick="setAnswer('${cat.id}',${i},true)" title="Yes">✓</div>
+              <div class="check-btn" id="no-${cat.id}-${i}" onclick="setAnswer('${cat.id}',${i},false)" title="No">✗</div>
+            </div>
+            <div class="check-content">
+              <div class="check-q">${item.q}</div>
+              <div class="check-hint">${item.hint}</div>
+              <span class="check-impact ci-${item.impact}">${item.impact==='high'?'High Impact':item.impact==='med'?'Medium Impact':'Low Impact'}</span>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function toggleCat(id){
+  const el=document.getElementById('catitems-'+id);
+  el.style.display=el.style.display==='none'?'':'none';
+}
+
+function setAnswer(catId,idx,val){
+  const key=catId+'_'+idx;
+  croAnswers[key]=val;
+  const yBtn=document.getElementById('yes-'+catId+'-'+idx);
+  const nBtn=document.getElementById('no-'+catId+'-'+idx);
+  yBtn.classList.toggle('yes',val===true);
+  yBtn.classList.toggle('no',false);
+  nBtn.classList.toggle('no',val===false);
+  nBtn.classList.toggle('yes',false);
+  updateCROScore();
+}
+
+function updateCROScore(){
+  let totalQ=0,totalY=0;
+  const catScores={};
+  CRO_CATS.forEach(cat=>{
+    let cy=0,ct=cat.items.length;
+    cat.items.forEach((_,i)=>{
+      const k=cat.id+'_'+i;
+      if(croAnswers[k]===true) cy++;
+    });
+    catScores[cat.id]={yes:cy,total:ct};
+    totalQ+=ct; totalY+=cy;
+  });
+
+  const answered=Object.keys(croAnswers).length;
+  const score=totalQ>0?Math.round((totalY/totalQ)*100):0;
+
+  // Update progress per cat
+  CRO_CATS.forEach(cat=>{
+    const cs=catScores[cat.id];
+    const ans=cat.items.filter((_,i)=>croAnswers[cat.id+'_'+i]!==undefined).length;
+    document.getElementById('catprog-'+cat.id).textContent=`${cs.yes}/${cs.total} ✓`;
+  });
+
+  if(answered===0) return;
+
+  const circle=document.getElementById('croCircle');
+  const verdict=document.getElementById('croVerdict');
+  let col=score>=75?'var(--green)':score>=50?'var(--amber)':'var(--red)';
+  let vt=score>=75?'Good — minor tweaks needed':score>=50?'Needs improvement':'Needs urgent work';
+  circle.style.borderColor=col; circle.style.color=col; circle.textContent=score;
+  verdict.style.color=col; verdict.textContent=vt;
+
+  // Cat breakdown
+  const bd=document.getElementById('croCatBreakdown');
+  bd.innerHTML=CRO_CATS.map(cat=>{
+    const cs=catScores[cat.id];
+    const pct=cs.total>0?Math.round((cs.yes/cs.total)*100):0;
+    const col=pct>=75?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+    return `<div class="cat-row">
+      <span class="cat-name">${cat.icon} ${cat.name}</span>
+      <div class="cat-bar-wrap"><div class="cat-bar" style="width:${pct}%;background:${col};"></div></div>
+      <span class="cat-score" style="color:${col}">${pct}%</span>
+    </div>`;
+  }).join('');
+
+  // Priority fixes — questions answered NO sorted by impact
+  const fixes=[];
+  CRO_CATS.forEach(cat=>{
+    cat.items.forEach((item,i)=>{
+      if(croAnswers[cat.id+'_'+i]===false){
+        fixes.push({cat:cat.name,icon:cat.icon,q:item.q,hint:item.hint,impact:item.impact,score:item.impact==='high'?3:item.impact==='med'?2:1});
+      }
+    });
+  });
+  fixes.sort((a,b)=>b.score-a.score);
+
+  if(fixes.length>0){
+    document.getElementById('croPrioritySection').classList.remove('hidden');
+    document.getElementById('croPriorityList').innerHTML=fixes.slice(0,10).map((f,i)=>`
+      <div class="priority-item">
+        <div class="pri-num pri-${i<3?1:i<6?2:3}">${i+1}</div>
+        <div class="pri-body">
+          <h4>${f.icon} ${f.cat} — ${f.q}</h4>
+          <p>${f.hint}</p>
+        </div>
+      </div>`).join('');
+  }
+}
+
+function exportCROReport(){
+  const score=document.getElementById('croCircle').textContent;
+  const fixes=[];
+  CRO_CATS.forEach(cat=>{
+    cat.items.forEach((item,i)=>{
+      if(croAnswers[cat.id+'_'+i]===false) fixes.push(`[${item.impact.toUpperCase()}] ${cat.name}: ${item.q}`);
+    });
+  });
+  const text=`CRO AUDIT REPORT\nDate: ${new Date().toLocaleDateString()}\nScore: ${score}/100\n\nPRIORITY FIXES:\n${fixes.join('\n')}`;
+  navigator.clipboard.writeText(text).then(()=>showToast('Report copied to clipboard ✓'));
+}
+
+// ── ATTRIBUTION ──
+function runAttribution(){
+  const directPct=getRadio('directPct');
+  const utmPersist=getRadio('utmPersist');
+  const hiddenFields=getRadio('hiddenFields');
+  const workflow=getRadio('workflow');
+  const utmNaming=getRadio('utmNaming');
+  const crm=getRadio('crm');
+  const hardcoded=getRadio('hardcoded');
+
+  const issues=[];
+  let score=100;
+
+  if(directPct==='50+'){score-=30;issues.push({type:'crit',icon:'🚨',title:'Over 50% of leads have no attribution — critical',body:'More than half your pipeline is invisible. You cannot prove ROI on any campaign. This is the most urgent fix.',action:'Implement UTM persistence script + hidden form fields immediately.',fix:'Deploy Layer 1 script below'});}
+  else if(directPct==='30-50'){score-=20;issues.push({type:'warn',icon:'⚠️',title:'30–50% Direct Traffic — significant attribution loss',body:'A third of your leads have no source data. Budget decisions are being made on incomplete data.',action:'Implement the 3-layer attribution fix.',fix:'Follow the fix plan below'});}
+  else if(directPct==='10-30'){score-=10;issues.push({type:'warn',icon:'⚠️',title:'10–30% Direct Traffic — moderate attribution loss',body:'Some attribution is breaking. Likely caused by multi-page journeys where UTMs drop after page 1.',action:'Add UTM persistence script to carry UTMs across pages.',fix:'Deploy Layer 1 script'});}
+
+  if(utmPersist==='no'||utmPersist==='unknown'){score-=25;issues.push({type:'crit',icon:'🔗',title:'UTMs are not persisting across pages',body:'When a visitor lands on your page with UTMs and clicks to another page, the UTMs disappear. Any form not on the exact landing page gets zero attribution.',action:'Add the UTM persistence script to your website head. It takes 30 minutes.',fix:'Copy the script below'});}
+
+  if(hiddenFields==='no'||hiddenFields==='unknown'){score-=25;issues.push({type:'crit',icon:'📋',title:'No hidden UTM fields on forms',body:'Even if UTMs reach the form page, without hidden fields they are never captured on the contact record. All campaign attribution is lost at submission.',action:'Add 5 hidden fields to every lead-generating form: utm_source, utm_medium, utm_campaign, utm_term, utm_content.',fix:'Set up hidden fields in your CRM forms'});}
+  else if(hiddenFields==='yes-some'){score-=10;issues.push({type:'warn',icon:'📋',title:'Hidden UTM fields only on some forms',body:'Any form without hidden fields is a black hole. Leads from those forms will always show as Direct.',action:'Audit all live lead forms and add hidden UTM fields to every one.',fix:'Consolidate to 10–15 live forms, add fields to all'});}
+
+  if(workflow==='no'||workflow==='unknown'){score-=10;issues.push({type:'warn',icon:'⚙️',title:'No translation workflow — raw UTMs only',body:'Raw UTMs like utm_source=google and utm_medium=cpc are hard to report on. A translation workflow converts them to clean values like "Paid Search → Google Ads".',action:'Build a HubSpot or CRM workflow using the mapping table below.',fix:'Build the translation workflow'});}
+
+  if(utmNaming==='no'){score-=10;issues.push({type:'warn',icon:'🏷',title:'No UTM naming convention',body:'Inconsistent UTM values create fragmented reporting — google, Google, GOOGLE become 3 separate sources. One naming convention fixes this.',action:'Define and document lowercase, hyphenated UTM naming. Use the UTM Builder tool for all future campaigns.',fix:'Set naming convention + use UTM Builder'});}
+
+  if(hardcoded==='yes'){score-=15;issues.push({type:'crit',icon:'🔒',title:'Hard-coded Lead Source values on forms',body:'If a form has a static "Lead Source = Website" value, every submission gets that value regardless of where the lead came from. This silently overwrites real attribution.',action:'Remove all default values from hidden Lead Source fields immediately.',fix:'Audit and fix all forms'});}
+
+  score=Math.max(0,score);
+  const scoreCol=score>=75?'var(--green)':score>=50?'var(--amber)':'var(--red)';
+
+  const showScript=utmPersist==='no'||utmPersist==='unknown'||directPct==='30-50'||directPct==='50+';
+  const isHubSpot=crm==='hubspot';
+
+  const html=`
+    <div style="display:flex;gap:16px;margin-bottom:20px;align-items:stretch;">
+      <div class="score-circle-wrap">
+        <div class="score-circle" style="border-color:${scoreCol};color:${scoreCol};">${score}</div>
+        <div class="score-label">Attribution Score</div>
+        <div class="score-verdict" style="color:${scoreCol};">${score>=75?'Healthy setup':score>=50?'Needs fixes':'Broken attribution'}</div>
+      </div>
+      <div style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;">
+        <div style="padding:12px 16px;background:var(--bg);border-bottom:1px solid var(--border);font-size:12px;font-weight:700;color:var(--text);">Setup Status</div>
+        <div class="setup-item"><div class="setup-status ${directPct==='0-10'?'ss-ok':directPct==='10-30'?'ss-warn':'ss-bad'}">${directPct==='0-10'?'✓':'✗'}</div><div class="setup-body"><h4>Direct Traffic Rate</h4><p>${directPct==='0-10'?'Under 10% — excellent attribution coverage':directPct==='10-30'?'10–30% — some loss, investigate sources':'Over 30% — significant attribution broken'}</p></div></div>
+        <div class="setup-item"><div class="setup-status ${utmPersist==='yes'?'ss-ok':utmPersist==='unknown'?'ss-warn':'ss-bad'}">${utmPersist==='yes'?'✓':utmPersist==='unknown'?'?':'✗'}</div><div class="setup-body"><h4>UTM Persistence Script</h4><p>${utmPersist==='yes'?'UTMs carry across pages — good':'UTMs likely drop after page 1 — leads from multi-page journeys get no attribution'}</p>${utmPersist!=='yes'?'<div class="setup-fix">→ Fix: Add UTM persistence script to website head</div>':''}</div></div>
+        <div class="setup-item"><div class="setup-status ${hiddenFields==='yes-all'?'ss-ok':hiddenFields==='yes-some'?'ss-warn':'ss-bad'}">${hiddenFields==='yes-all'?'✓':hiddenFields==='yes-some'?'⚠':'✗'}</div><div class="setup-body"><h4>Hidden UTM Fields on Forms</h4><p>${hiddenFields==='yes-all'?'All forms capture UTMs at submission':hiddenFields==='yes-some'?'Only some forms — partial coverage':'No forms capture UTMs — all attribution lost at submission'}</p>${hiddenFields!=='yes-all'?'<div class="setup-fix">→ Fix: Add 5 hidden UTM fields to every lead form</div>':''}</div></div>
+        <div class="setup-item"><div class="setup-status ${workflow==='yes'?'ss-ok':workflow==='unknown'?'ss-warn':'ss-bad'}">${workflow==='yes'?'✓':workflow==='unknown'?'?':'✗'}</div><div class="setup-body"><h4>Translation Workflow</h4><p>${workflow==='yes'?'UTMs are translated to clean channel values':'Raw UTMs only — reporting is fragmented'}</p>${workflow!=='yes'?'<div class="setup-fix">→ Fix: Build translation workflow in your CRM</div>':''}</div></div>
+        <div class="setup-item"><div class="setup-status ${hardcoded==='no'?'ss-ok':'ss-bad'}">${hardcoded==='no'?'✓':'✗'}</div><div class="setup-body"><h4>Hard-coded Lead Source Fields</h4><p>${hardcoded==='no'?'No hard-coded defaults found':'Hard-coded values are overwriting real attribution — urgent fix needed'}</p></div></div>
+      </div>
+    </div>
+
+    ${issues.length?`<div class="section-title">🔍 Issues Found</div>${issues.map(i=>`<div class="result-card rc-${i.type}"><div class="rc-icon">${i.icon}</div><div class="rc-body"><h4>${i.title}</h4><p>${i.body}</p><p style="margin-top:6px;font-weight:600;color:var(--text);">→ ${i.action}</p></div></div>`).join('')}`:'<div class="result-card rc-ok"><div class="rc-icon">✅</div><div class="rc-body"><h4>Attribution setup looks healthy</h4><p>No major issues detected. Keep monitoring your Direct Traffic % monthly.</p></div></div>'}
+
+    ${showScript?`
+    <div class="divider"></div>
+    <div class="section-title">📋 Fix: UTM Persistence Script</div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:10px;">Paste this into the &lt;head&gt; of every page on your website. It stores UTMs in localStorage and carries them across all internal pages.</p>
+    <div class="code-block">
+      <button class="code-copy" onclick="copyCode('utmScript')">Copy</button>
+      <pre id="utmScript">&lt;script&gt;
+(function(){
+  var PARAMS=['utm_source','utm_medium','utm_campaign','utm_term','utm_content'];
+  var KEY='persisted_utms';
+  var WINDOW_DAYS=90;
+  function getStored(){
+    try{var raw=JSON.parse(localStorage.getItem(KEY));
+    if(!raw||!raw.ts)return{};
+    if(Date.now()-raw.ts>WINDOW_DAYS*864e5){localStorage.removeItem(KEY);return{};}
+    return raw.data||{};}catch(e){return{};}
+  }
+  function capture(){
+    var qs=new URLSearchParams(window.location.search);
+    var found={};
+    PARAMS.forEach(function(p){var v=qs.get(p);if(v)found[p]=v.trim().toLowerCase();});
+    if(Object.keys(found).length)try{localStorage.setItem(KEY,JSON.stringify({data:found,ts:Date.now()}));}catch(e){}
+  }
+  function decorate(link){
+    var utms=getStored();
+    if(!link||!link.href||!Object.keys(utms).length)return;
+    try{var url=new URL(link.href,window.location.origin);
+    if(url.hostname!==window.location.hostname)return;
+    if(url.protocol.indexOf('http')!==0)return;
+    var changed=false;
+    PARAMS.forEach(function(p){if(utms[p]&&!url.searchParams.has(p)){url.searchParams.set(p,utms[p]);changed=true;}});
+    if(changed)link.href=url.toString();}catch(e){}
+  }
+  function decorateAll(root){(root||document).querySelectorAll('a[href]').forEach(decorate);}
+  capture();
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){decorateAll();});}
+  else{decorateAll();}
+  new MutationObserver(function(muts){muts.forEach(function(m){Array.prototype.forEach.call(m.addedNodes,function(n){if(n.nodeType!==1)return;if(n.tagName==='A')decorate(n);else decorateAll(n);});});}).observe(document.documentElement,{childList:true,subtree:true});
+})();
+&lt;/script&gt;</pre>
+    </div>`:''}
+
+    ${isHubSpot?`
+    <div class="divider"></div>
+    <div class="section-title">⚙️ HubSpot Translation Workflow Mapping</div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Build a workflow in HubSpot Marketing Hub Professional that fires on every new contact. Map UTMs to clean channel values:</p>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <thead><tr style="background:var(--bg);">
+          <th style="padding:9px 12px;text-align:left;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border);">utm_source</th>
+          <th style="padding:9px 12px;text-align:left;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border);">utm_medium</th>
+          <th style="padding:9px 12px;text-align:left;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border);">→ Original Source (Revised)</th>
+          <th style="padding:9px 12px;text-align:left;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border);">→ Drill-Down 1</th>
+        </tr></thead>
+        <tbody>
+          ${[['google','cpc','Paid Search','Google Ads'],['linkedin','paid-social','Paid Social','LinkedIn Ads'],['facebook','paid-social','Paid Social','Meta Ads'],['newsletter','email','Email','Newsletter'],['partner','referral','Partner','Partner Referral'],['(any)','(any)','Referral','utm_source value']].map(r=>`<tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 12px;font-family:monospace;color:var(--accent);">${r[0]}</td><td style="padding:8px 12px;font-family:monospace;color:var(--accent);">${r[1]}</td><td style="padding:8px 12px;font-weight:500;">${r[2]}</td><td style="padding:8px 12px;">${r[3]}</td></tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`:''}`;
+
+  const res=document.getElementById('attributionResults');
+  res.innerHTML=html;
+  res.classList.remove('hidden');
+}
+
+function copyCode(id){
+  const el=document.getElementById(id);
+  navigator.clipboard.writeText(el.textContent).then(()=>showToast('Script copied ✓'));
+}
+
+// ── WASTED SPEND ──
+function calcWaste(){
+  const spend=parseFloat(document.getElementById('wTotalSpend').value)||0;
+  const leads=parseFloat(document.getElementById('wLeads').value)||0;
+  const directPct=parseFloat(document.getElementById('wDirectPct').value)||0;
+  const bounce=parseFloat(document.getElementById('wBounce').value)||0;
+  const freq=parseFloat(document.getElementById('wFreq').value)||0;
+  const zeroConv=parseFloat(document.getElementById('wZeroConv').value)||0;
+  const dealSize=parseFloat(document.getElementById('wDealSize').value)||0;
+  const closeRate=parseFloat(document.getElementById('wCloseRate').value)||0;
+
+  if(!spend) return;
+
+  const wasteAttrib=spend*(directPct/100)*0.3;
+  const wasteBounce=spend*(bounce/100)*0.4;
+  const wasteFreq=freq>5?spend*0.15:freq>4?spend*0.08:0;
+  const wasteZero=spend*(zeroConv/100);
+  const totalWaste=Math.min(wasteAttrib+wasteBounce+wasteFreq+wasteZero,spend*0.85);
+  const effectiveSpend=spend-totalWaste;
+  const trueCPL=leads>0?effectiveSpend/leads:0;
+  const reportedCPL=leads>0?spend/leads:0;
+  const pipeline=leads*(closeRate/100)*dealSize;
+  const recoverable=totalWaste*0.6;
+
+  document.getElementById('wasteResults').classList.remove('hidden');
+  document.getElementById('wasteCards').innerHTML=`
+    <div class="calc-card"><div class="calc-value" style="color:var(--red);">$${fmt(totalWaste)}</div><div class="calc-label">Estimated Wasted Spend</div></div>
+    <div class="calc-card"><div class="calc-value" style="color:var(--amber);">${spend>0?Math.round((totalWaste/spend)*100):0}%</div><div class="calc-label">% of Budget Wasted</div></div>
+    <div class="calc-card"><div class="calc-value" style="color:var(--green);">$${fmt(recoverable)}</div><div class="calc-label">Recoverable with Fixes</div></div>
+    <div class="calc-card"><div class="calc-value" style="color:var(--text);">$${fmt(reportedCPL)}</div><div class="calc-label">Reported CPL</div></div>
+    <div class="calc-card"><div class="calc-value" style="color:var(--accent);">$${fmt(trueCPL)}</div><div class="calc-label">True CPL (after waste removed)</div></div>
+    <div class="calc-card"><div class="calc-value" style="color:var(--green);">$${fmtLarge(pipeline)}</div><div class="calc-label">Estimated Pipeline</div></div>`;
+
+  const insights=[];
+  if(wasteAttrib>0) insights.push({type:'warn',icon:'🔗',title:`$${fmt(wasteAttrib)} wasted on unattributed traffic`,body:`${directPct}% of your leads have no source data. Roughly 30% of that spend drove real results you cannot prove. Fix attribution to recover this visibility.`,action:'Fix UTMs and hidden form fields — use the Attribution Health tab'});
+  if(wasteBounce>0) insights.push({type:'warn',icon:'↩️',title:`$${fmt(wasteBounce)} wasted on bounced visitors`,body:`With a ${bounce}% bounce rate, roughly 40% of that spend is on visitors who left immediately. Improving landing page relevance and load speed reduces this.`,action:'Run the CRO Audit — use the CRO Checklist tab'});
+  if(wasteFreq>0) insights.push({type:'crit',icon:'🔄',title:`$${fmt(wasteFreq)} wasted on ad fatigue`,body:`Frequency of ${freq}x means your audience has seen your ads too many times. Above 4x, performance drops and CPM rises.`,action:'Refresh creative and expand audiences immediately'});
+  if(wasteZero>0) insights.push({type:'crit',icon:'🚫',title:`$${fmt(wasteZero)} on zero-conversion campaigns`,body:`${zeroConv}% of budget is on campaigns generating no conversions. This is direct waste with no return.`,action:'Pause zero-conversion campaigns and redirect budget to top performers'});
+
+  if(dealSize&&closeRate){
+    insights.push({type:'ok',icon:'💰',title:`Estimated pipeline: $${fmtLarge(pipeline)}`,body:`Based on ${leads} leads at ${closeRate}% close rate and $${fmtLarge(dealSize)} average deal size. If you recover $${fmt(recoverable)} in wasted spend and generate ${Math.round(recoverable/(reportedCPL||1))} more leads, pipeline increases by $${fmtLarge(Math.round(recoverable/(reportedCPL||1))*(closeRate/100)*dealSize)}.`,action:'Focus on recovering wasted spend before increasing budget'});
+  }
+
+  document.getElementById('wasteInsights').innerHTML=insights.map(i=>`
+    <div class="result-card rc-${i.type}">
+      <div class="rc-icon">${i.icon}</div>
+      <div class="rc-body"><h4>${i.title}</h4><p>${i.body}</p><p style="margin-top:6px;font-weight:600;">→ ${i.action}</p></div>
+    </div>`).join('');
+}
+
+function fmt(n){return n>=1000?(n/1000).toFixed(1)+'K':n.toFixed(0);}
+function fmtLarge(n){return n>=1000000?(n/1000000).toFixed(1)+'M':n>=1000?(n/1000).toFixed(0)+'K':n.toFixed(0);}
+
+// INIT
+initCRO();
+// Set initial radio data values
+document.querySelectorAll('.radio-opt.selected').forEach(el=>{
+  const opts=el.parentElement.querySelectorAll('.radio-opt');
+  opts.forEach((o,i)=>{
+    const vals=['0-10','yes','yes-all','yes','yes','hubspot','no'];
+    if(o.classList.contains('selected')) o.dataset.val=o.dataset.val||o.textContent.trim();
+  });
+});
+</script>
+</body>
+</html>
