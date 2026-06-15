@@ -262,6 +262,7 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
       <div class="main-actions">
         <button class="btn-sm btn-outline" onclick="copyCurrentVersion()">Copy Fields</button>
         <button class="btn-sm btn-green" onclick="saveCurrentVersion()">Save Version</button>
+        <button class="btn-sm" style="background:#7c3aed;color:#fff;box-shadow:0 2px 8px rgba(124,58,237,.25);" onclick="exportToPDF()">Export PDF</button>
       </div>
     </div>
 
@@ -721,6 +722,128 @@ function generateAIPrompt() {
 }
 
 function copyAIPrompt() { navigator.clipboard.writeText(aiPrompt).catch(() => {}); }
+
+function exportToPDF() {
+  if (!currentAdTypeId) { showToast('Select an ad type first'); return; }
+  saveFieldsToVersion();
+  const at = getAdType(currentAdTypeId);
+  const brand = document.getElementById('brandName').value.trim() || 'Your Brand';
+  const audience = document.getElementById('audience').value.trim() || '—';
+  const benefit = document.getElementById('benefit').value.trim() || '—';
+  const cta = document.getElementById('ctaGoal').value;
+  const platform = getPlatformName();
+  const allVersions = versions[currentAdTypeId] || [];
+
+  const rows = allVersions.map((ver, vi) => {
+    const fields = at.fields.map(f => {
+      const val = ver.fields[f.id] || '';
+      const over = val.length > f.max;
+      return `<tr>
+        <td style="padding:8px 12px;font-size:12px;font-weight:600;color:#334155;white-space:nowrap;border-bottom:1px solid #e2e6f3;">${f.label}<br/><span style="font-size:10px;font-weight:400;color:#94a3b8;">max ${f.max} chars</span></td>
+        <td style="padding:8px 12px;font-size:12px;color:#0f172a;border-bottom:1px solid #e2e6f3;">${val || '<span style="color:#94a3b8;font-style:italic;">Not filled</span>'}</td>
+        <td style="padding:8px 12px;font-size:11px;font-weight:700;text-align:center;border-bottom:1px solid #e2e6f3;${over?'color:#dc2626;':'color:#0d9f6e;'}">${val.length}/${f.max}<br/><span style="font-size:10px;">${over?'⚠ Over limit':'✓ OK'}</span></td>
+      </tr>`;
+    }).join('');
+    return `<div style="margin-bottom:24px;">
+      <div style="background:#1450F5;color:#fff;padding:10px 16px;border-radius:8px 8px 0 0;font-size:13px;font-weight:700;">Version ${vi+1}</div>
+      <table style="width:100%;border-collapse:collapse;border:1px solid #e2e6f3;border-top:none;border-radius:0 0 8px 8px;overflow:hidden;">
+        <thead><tr style="background:#f5f7ff;">
+          <th style="padding:8px 12px;font-size:11px;font-weight:600;color:#64748b;text-align:left;border-bottom:1px solid #e2e6f3;width:25%;">Field</th>
+          <th style="padding:8px 12px;font-size:11px;font-weight:600;color:#64748b;text-align:left;border-bottom:1px solid #e2e6f3;">Copy</th>
+          <th style="padding:8px 12px;font-size:11px;font-weight:600;color:#64748b;text-align:center;border-bottom:1px solid #e2e6f3;width:80px;">Count</th>
+        </tr></thead>
+        <tbody>${fields}</tbody>
+      </table>
+    </div>`;
+  }).join('');
+
+  const goals = at.goals.map(g => `<span style="font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;background:#e8edff;color:#1450F5;">${g[0]}</span>`).join(' ');
+
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+  <title>Ad Copy — ${at.name} — ${brand}</title>
+  <style>
+    body{font-family:'Inter',sans-serif;margin:0;padding:0;background:#fff;color:#0f172a;}
+    @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
+    @page{margin:20mm;}
+  </style>
+  </head><body>
+  <div style="max-width:800px;margin:0 auto;padding:32px 24px;">
+
+    <!-- HEADER -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;padding-bottom:20px;border-bottom:2px solid #1450F5;">
+      <div>
+        <div style="font-size:22px;font-weight:800;color:#0f172a;letter-spacing:-.5px;">Ad Copy Review</div>
+        <div style="font-size:13px;color:#64748b;margin-top:4px;">${platform} · ${at.name}</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:12px;font-weight:700;color:#1450F5;">${brand}</div>
+        <div style="font-size:11px;color:#94a3b8;margin-top:2px;">${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</div>
+      </div>
+    </div>
+
+    <!-- CAMPAIGN CONTEXT -->
+    <div style="background:#f5f7ff;border-radius:10px;padding:16px 20px;margin-bottom:24px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;">
+      <div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#94a3b8;margin-bottom:4px;">Brand</div><div style="font-size:13px;font-weight:600;color:#0f172a;">${brand}</div></div>
+      <div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#94a3b8;margin-bottom:4px;">Audience</div><div style="font-size:12px;color:#334155;">${audience}</div></div>
+      <div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#94a3b8;margin-bottom:4px;">CTA Goal</div><div style="font-size:12px;color:#334155;">${cta}</div></div>
+      <div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#94a3b8;margin-bottom:4px;">Versions</div><div style="font-size:13px;font-weight:600;color:#1450F5;">${allVersions.length}</div></div>
+    </div>
+
+    <!-- KEY BENEFIT -->
+    ${benefit && benefit !== '—' ? `<div style="background:#e6f7f2;border-left:3px solid #0d9f6e;border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:24px;font-size:12px;color:#334155;"><strong style="color:#0d9f6e;">Key Benefit:</strong> ${benefit}</div>` : ''}
+
+    <!-- ELIGIBLE GOALS -->
+    <div style="margin-bottom:20px;">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#94a3b8;margin-bottom:8px;">Eligible Campaign Goals</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">${goals}</div>
+    </div>
+
+    <!-- VERSIONS -->
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#94a3b8;margin-bottom:12px;">Ad Copy — All Versions</div>
+    ${rows}
+
+    <!-- APPROVAL SECTION -->
+    <div style="margin-top:32px;border:1.5px solid #e2e6f3;border-radius:10px;padding:20px;">
+      <div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:16px;">Review & Approval</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div>
+          <div style="font-size:11px;font-weight:600;color:#64748b;margin-bottom:8px;">Preferred Version</div>
+          <div style="border-bottom:1px solid #e2e6f3;height:28px;"></div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:600;color:#64748b;margin-bottom:8px;">Decision</div>
+          <div style="display:flex;gap:12px;align-items:center;padding-top:4px;">
+            <span style="font-size:12px;">☐ Approved</span>
+            <span style="font-size:12px;">☐ Revisions needed</span>
+          </div>
+        </div>
+        <div style="grid-column:1/-1;">
+          <div style="font-size:11px;font-weight:600;color:#64748b;margin-bottom:8px;">Feedback / Comments</div>
+          <div style="border:1px solid #e2e6f3;border-radius:6px;height:60px;"></div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:600;color:#64748b;margin-bottom:8px;">Reviewer Name</div>
+          <div style="border-bottom:1px solid #e2e6f3;height:28px;"></div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:600;color:#64748b;margin-bottom:8px;">Date</div>
+          <div style="border-bottom:1px solid #e2e6f3;height:28px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div style="margin-top:24px;text-align:center;font-size:11px;color:#94a3b8;">
+      Generated by Ad Copy Studio · ${brand} · ${new Date().toLocaleDateString()}
+    </div>
+
+  </div>
+  <script>window.onload=function(){window.print();}<\/script>
+  </body></html>`);
+  win.document.close();
+  showToast('PDF export opened ✓');
+}
 
 // Init
 renderAdTypeList();
