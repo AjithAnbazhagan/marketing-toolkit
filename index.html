@@ -221,7 +221,7 @@
       </div>
       <div class="field-group">
         <label>Target Audience</label>
-        <select id="audience">
+        <select id="audience" multiple style="height:180px;padding:6px 8px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;width:100%;outline:none;">
           <option value="">Select target audience</option>
           <optgroup label="Leadership & Strategy">
             <option>C-Suite Executives (CEO, CTO, COO)</option>
@@ -253,6 +253,7 @@
             <option>Procurement Managers</option>
           </optgroup>
         </select>
+        <div style="font-size:10px;color:var(--muted2);margin-top:4px;">Hold Ctrl (Windows) or Cmd (Mac) to select multiple</div>
       </div>
       <div class="field-group">
         <label>Content Tone</label>
@@ -485,7 +486,7 @@ Output only these 8 sections. No extra commentary outside the sections.`;
 async function runAgent() {
   const url = document.getElementById('blogUrl').value.trim();
   const brand = document.getElementById('brandName').value.trim();
-  const audience = document.getElementById('audience').value;
+  const audienceEl = document.getElementById("audience"); const audience = Array.from(audienceEl.selectedOptions).map(o => o.value).filter(Boolean).join(", ") || "";
   const tone = document.getElementById('tone').value;
 
   if (!url || !url.startsWith('http')) return alert('Please enter a valid URL starting with https://');
